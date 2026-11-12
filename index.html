@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/ozkafe-logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2C1608" />
+    <meta name="description" content="Ozkafe - Specialty coffee roastery brand and cafe experience center founded in 2016 in Ballygunge, Kolkata. Specialty coffee, artisanal bakery, pizzas, continental food, burgers, salads & flavored teas." />
+    <meta name="keywords" content="Ozkafe, specialty coffee Kolkata, coffee roastery Kolkata, Ballygunge cafe, artisanal bakery, fresh pizza, continental food Kolkata, pour over coffee" />
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+
+    <!-- Ozkafe Specialty Coffee Initial & Refresh Page Loader Styles -->
+    <style>
+      #ozkafe-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        z-index: 999999;
+        background: radial-gradient(circle at center, #2C1608 0%, #150903 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.45s ease;
+        pointer-events: auto;
+        user-select: none;
+        animation: ozSafetyAutoDismiss 0.45s cubic-bezier(0.4, 0, 0.2, 1) 2.2s forwards;
+      }
+
+      @keyframes ozSafetyAutoDismiss {
+        to {
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+        }
+      }
+
+      #ozkafe-loader.loader-fade-out {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+
+      .loader-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 1.5rem;
+        max-width: 380px;
+        width: 100%;
+      }
+
+      .loader-logo-wrap {
+        position: relative;
+        width: 106px;
+        height: 106px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .loader-logo-img {
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        object-fit: cover;
+        position: relative;
+        z-index: 2;
+        background: #FAF7F2;
+        padding: 3px;
+        border: 2px solid #DEB58A;
+        box-shadow: 0 0 24px rgba(222, 181, 138, 0.45), 0 8px 24px rgba(0, 0, 0, 0.6);
+        animation: ozLogoBreath 2.2s ease-in-out infinite;
+      }
+
+      .loader-ring-outer {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid rgba(222, 181, 138, 0.18);
+        border-top-color: #DEB58A;
+        border-right-color: #BA733D;
+        z-index: 1;
+        animation: ozRoasterySpin 1.35s linear infinite;
+      }
+
+      .loader-ring-pulse {
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(186, 115, 61, 0.24) 0%, rgba(186, 115, 61, 0) 70%);
+        z-index: 0;
+        animation: ozRoasteryPulse 2.2s ease-in-out infinite;
+      }
+
+      .loader-brand-block {
+        margin-bottom: 1.35rem;
+      }
+
+      .loader-brand-name {
+        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: #FFFFFF;
+        letter-spacing: 0.18em;
+        margin: 0 0 0.35rem;
+        line-height: 1.1;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+      }
+
+      .loader-brand-sub {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #DEB58A;
+        letter-spacing: 0.24em;
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+      .loader-progress-wrap {
+        width: 160px;
+        height: 3.5px;
+        background: rgba(222, 181, 138, 0.18);
+        border-radius: 9999px;
+        overflow: hidden;
+        position: relative;
+        margin-bottom: 0.85rem;
+      }
+
+      .loader-progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #BA733D, #DEB58A, #FFFFFF);
+        border-radius: 9999px;
+        box-shadow: 0 0 10px rgba(222, 181, 138, 0.6);
+        animation: ozLoadProgress 1.15s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      .loader-status-text {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 0.74rem;
+        color: #A8988B;
+        letter-spacing: 0.06em;
+        font-weight: 500;
+        animation: ozStatusFade 1.6s ease-in-out infinite alternate;
+      }
+
+      @keyframes ozRoasterySpin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      @keyframes ozRoasteryPulse {
+        0%, 100% { transform: scale(0.92); opacity: 0.4; }
+        50% { transform: scale(1.12); opacity: 0.85; }
+      }
+
+      @keyframes ozLogoBreath {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+      }
+
+      @keyframes ozLoadProgress {
+        0% { width: 0%; }
+        35% { width: 50%; }
+        75% { width: 88%; }
+        100% { width: 100%; }
+      }
+
+      @keyframes ozStatusFade {
+        0% { opacity: 0.55; }
+        100% { opacity: 0.95; }
+      }
+    </style>
+
+    <title>Ozkafe | Specialty Coffee Roastery & Cafe Experience Center | Kolkata</title>
+  </head>
+  <body>
+    <!-- Initial & Refresh Page Loader with Ozkafe Logo -->
+    <div id="ozkafe-loader" class="ozkafe-loader-screen" role="status" aria-live="polite" aria-label="Loading Ozkafe...">
+      <div class="loader-inner">
+        <!-- Logo with Roastery Brewing Ring -->
+        <div class="loader-logo-wrap">
+          <div class="loader-ring-outer"></div>
+          <div class="loader-ring-pulse"></div>
+          <img src="/ozkafe-logo.png" alt="Ozkafe Specialty Coffee Roastery" class="loader-logo-img" />
+        </div>
+
+        <!-- Brand Typography -->
+        <div class="loader-brand-block">
+          <div class="loader-brand-name">OZKAFE</div>
+          <p class="loader-brand-sub">BREWING FRESH • EST. 2016</p>
+        </div>
+
+        <!-- Animated Progress Bar -->
+        <div class="loader-progress-wrap">
+          <div class="loader-progress-bar"></div>
+        </div>
+
+        <!-- Roastery Status Text -->
+        <span class="loader-status-text">Micro-roasting in Kolkata...</span>
+      </div>
+    </div>
+
+    <!-- Fail-safe self-dismissing loader script (guarantees site is revealed) -->
+    <script>
+      (function() {
+        var loader = document.getElementById('ozkafe-loader');
+        if (!loader) return;
+
+        var dismissed = false;
+        function dismiss() {
+          if (dismissed) return;
+          dismissed = true;
+          loader.classList.add('loader-fade-out');
+          setTimeout(function() {
+            if (loader && loader.parentNode) {
+              loader.parentNode.removeChild(loader);
+            }
+          }, 550);
+        }
+
+        // Auto-dismiss on window load with slight delay so animation completes smoothly
+        if (document.readyState === 'complete') {
+          setTimeout(dismiss, 900);
+        } else {
+          window.addEventListener('load', function() {
+            setTimeout(dismiss, 800);
+          });
+          // Absolute hard ceiling fail-safe: dismiss after 1600ms guaranteed
+          setTimeout(dismiss, 1600);
+        }
+
+        // Global function for React mount hook
+        window.__dismissOzkafeLoader = function() {
+          setTimeout(dismiss, 350);
+        };
+      })();
+    </script>
+
+    <div id="root">
+      <div id="file-protocol-notice" style="display:none; font-family:'Plus Jakarta Sans',sans-serif; text-align:center; padding:3rem 2rem; max-width:580px; margin:4rem auto; background:#FAF7F2; border:1.5px solid #381C0C; border-radius:12px; color:#211208; box-shadow:0 10px 30px rgba(41,20,8,0.12);">
+        <img src="/ozkafe-logo.png" style="width:72px; height:72px; margin:0 auto 1.25rem; display:block; border-radius:50%;" alt="Ozkafe Logo" onerror="this.style.display='none'"/>
+        <h2 style="margin-bottom:0.75rem; color:#211208; font-size:1.6rem; font-family:'Outfit',sans-serif;">Ozkafe Web Application</h2>
+        <p style="margin-bottom:1.5rem; color:#57463B; line-height:1.6; font-size:0.95rem;">
+          React applications run on a local HTTP development server. Browsers restrict JSX and JavaScript modules from loading directly over the <code>file:///</code> protocol.
+        </p>
+        <a href="http://localhost:5173/" style="display:inline-block; background:#291408; color:#ffffff; padding:0.85rem 1.8rem; border-radius:6px; text-decoration:none; font-weight:600; font-size:0.95rem; box-shadow:0 4px 12px rgba(41,20,8,0.2);">
+          Open Live Website (http://localhost:5173/)
+        </a>
+      </div>
+      <script>
+        if (window.location.protocol === 'file:') {
+          document.getElementById('file-protocol-notice').style.display = 'block';
+        }
+      </script>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

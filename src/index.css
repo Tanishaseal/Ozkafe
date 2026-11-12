@@ -1,0 +1,573 @@
+/* ==========================================================================
+   Ozkafe Design System - Pure Vanilla CSS
+   Aesthetic: Clean, Plain & Simple White & Brown Specialty Coffee Identity
+   ========================================================================== */
+
+:root {
+  /* Color Palette - White & Coffee Brown (Derived from Ozkafe Logo) */
+  --color-espresso-900: #1B0C04;
+  --color-espresso-800: #291408;
+  --color-espresso-700: #381C0C;
+  --color-roast-600: #4E2812;
+  --color-roast-500: #693719;
+  --color-caramel-400: #8E4E25;
+  --color-warm-amber: #BA733D;
+  --color-biscuit: #DEB58A;
+  
+  /* Cream, Ivory & White Shades */
+  --color-cream-100: #F6F1EA;
+  --color-cream-50: #FCFAF7;
+  --color-cream-200: #EFE6D8;
+  --color-cream-300: #DFD3C1;
+  --color-white: #FFFFFF;
+  --color-roastery-grey: #D7D2CA;
+  --color-roastery-grey-dark: #C9C3B9;
+  
+  /* Neutrals & Text */
+  --text-primary: #211208;
+  --text-secondary: #57463B;
+  --text-muted: #827266;
+  --text-inverse: #FFFFFF;
+  --text-inverse-muted: #E2D4C7;
+  
+  /* Surface & Borders */
+  --border-light: #E8DFD4;
+  --border-medium: #D4C5B5;
+  --border-dark: #381C0C;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FCFAF7;
+  --bg-accent: #F6F1EA;
+  --bg-dark: #291408;
+  --bg-darker: #1B0C04;
+  
+  /* Typography */
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  /* Elevation / Shadows (Soft & Subtle) */
+  --shadow-sm: 0 1px 3px rgba(33, 18, 8, 0.05);
+  --shadow-md: 0 4px 12px rgba(33, 18, 8, 0.08);
+  --shadow-lg: 0 10px 24px rgba(33, 18, 8, 0.1);
+  --shadow-hover: 0 12px 30px rgba(33, 18, 8, 0.14);
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+  
+  /* Container sizes */
+  --container-max: 1240px;
+  --header-height: 80px;
+  --topbar-height: 38px;
+}
+
+/* CSS Reset & Defaults */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* Typography Helpers */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-espresso-800);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 600;
+}
+
+h3 {
+  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+}
+
+h4 {
+  font-size: 1.2rem;
+}
+
+p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* Container & Layout */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.section {
+  padding: 5rem 0;
+}
+
+.section-tight {
+  padding: 3rem 0;
+}
+
+.section-hero {
+  padding: 3.5rem 0 4.5rem;
+}
+
+.bg-cream {
+  background-color: var(--bg-secondary);
+}
+
+.bg-accent {
+  background-color: var(--bg-accent);
+}
+
+.bg-dark {
+  background-color: var(--bg-dark);
+  color: var(--text-inverse);
+}
+
+.bg-dark h1, .bg-dark h2, .bg-dark h3, .bg-dark h4 {
+  color: var(--text-inverse);
+}
+
+.bg-dark p {
+  color: var(--text-inverse-muted);
+}
+
+/* Headings with eyebrow badge */
+.section-header {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 3rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: var(--color-caramel-400);
+  margin-bottom: 0.75rem;
+}
+
+.eyebrow-dark {
+  color: var(--color-biscuit);
+}
+
+.section-title {
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 1.08rem;
+  color: var(--text-secondary);
+}
+
+/* Common UI Elements */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.82rem 1.6rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-normal);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--color-espresso-800);
+  color: var(--color-white);
+  border: 1px solid var(--color-espresso-800);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-espresso-900);
+  border-color: var(--color-espresso-900);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(41, 20, 8, 0.2);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-espresso-800);
+  border: 1.5px solid var(--color-espresso-800);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-espresso-800);
+  color: var(--color-white);
+  transform: translateY(-1px);
+}
+
+.btn-outline-white {
+  background-color: transparent;
+  color: var(--color-white);
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+}
+
+.btn-outline-white:hover {
+  background-color: var(--color-white);
+  color: var(--color-espresso-800);
+}
+
+.btn-sm {
+  padding: 0.55rem 1.1rem;
+  font-size: 0.84rem;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge-brown {
+  background-color: var(--color-cream-100);
+  color: var(--color-espresso-800);
+  border: 1px solid var(--border-light);
+}
+
+.badge-dark {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: var(--color-biscuit);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Card Styling */
+.card {
+  background-color: var(--color-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Grid Utilities */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 992px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .section {
+    padding: 3.5rem 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .container, .container-narrow {
+    padding-left: 1.15rem;
+    padding-right: 1.15rem;
+  }
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr;
+  }
+  .section {
+    padding: 2.75rem 0;
+  }
+}
+
+/* ==========================================================================
+   Ozkafe Botanical & Coffee Illustrations Design Elements
+   ========================================================================== */
+.art-watermark {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.18;
+  z-index: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.art-watermark-dark {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.18;
+  z-index: 1;
+}
+
+.art-badge-decor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.art-flourish-img {
+  display: block;
+  max-width: 100%;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.85;
+}
+
+.art-accent-inline {
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.82;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream-50);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-biscuit);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-caramel-400);
+}
+
+/* ==========================================================================
+   Page Header Hero (Rich Photography Background with Dark Gradient Overlay)
+   ========================================================================== */
+.page-header-hero {
+  position: relative;
+  background-color: var(--color-espresso-950);
+  color: var(--color-white);
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4.5rem 1.5rem 3.8rem;
+  border-bottom: 2px solid var(--color-roast-700);
+  text-align: center;
+  overflow: hidden;
+}
+
+.page-header-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.page-header-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  filter: brightness(0.7) contrast(1.15);
+  transform: scale(1.03);
+  transition: transform 12s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 0;
+}
+
+.page-header-hero:hover .page-header-bg {
+  transform: scale(1.07);
+}
+
+.page-header-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 9, 3, 0.8) 0%,
+    rgba(20, 9, 3, 0.64) 40%,
+    rgba(20, 9, 3, 0.84) 80%,
+    rgba(20, 9, 3, 0.96) 100%
+  );
+  backdrop-filter: blur(0.5px);
+  -webkit-backdrop-filter: blur(0.5px);
+  pointer-events: none;
+}
+
+.page-header-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(20, 9, 3, 0.15) 0%,
+    rgba(20, 9, 3, 0.72) 100%
+  );
+  pointer-events: none;
+}
+
+/* Breadcrumb Navigation Trail */
+.header-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin: 0.35rem auto 0;
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+.breadcrumb-link {
+  color: var(--color-biscuit);
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.breadcrumb-link:hover {
+  color: var(--color-white);
+  text-decoration: underline;
+}
+
+.breadcrumb-sep {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.85rem;
+  margin: 0 0.2rem;
+}
+
+.breadcrumb-current {
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+/* Typography in Hero Headers */
+.page-header-hero h1 {
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  margin: 0 0 0.4rem;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.75), 0 2px 6px rgba(0, 0, 0, 0.9);
+  text-align: center;
+}
