@@ -27,12 +27,12 @@ export default function Navbar({ currentPage, setCurrentPage }) {
   }, [isMobileMenuOpen]);
 
   const navItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About Us' },
-    { id: 'commercial', label: 'Commercial' },
-    { id: 'single-origin', label: 'Single Origin' },
-    { id: 'contact', label: 'Contact Us' },
-    { id: 'faq', label: 'FAQ' }
+    { id: 'home', label: 'Home', path: '/' },
+    { id: 'about', label: 'About Us', path: '/aboutus' },
+    { id: 'commercial', label: 'Commercial', path: '/commercial' },
+    { id: 'single-origin', label: 'Single Origin', path: '/single-origin' },
+    { id: 'contact', label: 'Contact Us', path: '/contactus' },
+    { id: 'faq', label: 'FAQ', path: '/faq' }
   ];
 
   const handleNavClick = (pageId) => {
@@ -88,7 +88,7 @@ export default function Navbar({ currentPage, setCurrentPage }) {
         <div className="container navbar-container">
           {/* Logo & Title */}
           <a 
-            href="#home" 
+            href="/" 
             className="nav-brand" 
             onClick={(e) => { e.preventDefault(); handleNavClick('home'); }}
             aria-label="Ozkafe Home"
@@ -107,14 +107,18 @@ export default function Navbar({ currentPage, setCurrentPage }) {
           {/* Desktop Nav Links */}
           <div className="nav-links" role="menubar">
             {navItems.map((item) => (
-              <button
+              <a
                 key={item.id}
+                href={item.path}
                 role="menuitem"
                 className={`nav-link ${currentPage === item.id ? 'active' : ''}`}
-                onClick={() => handleNavClick(item.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(item.id);
+                }}
               >
                 {item.label}
-              </button>
+              </a>
             ))}
           </div>
 
@@ -162,13 +166,17 @@ export default function Navbar({ currentPage, setCurrentPage }) {
           />
           <div className="mobile-drawer-links" style={{ position: 'relative', zIndex: 1 }}>
             {navItems.map((item) => (
-              <button
+              <a
                 key={item.id}
+                href={item.path}
                 className={`nav-link ${currentPage === item.id ? 'active' : ''}`}
-                onClick={() => handleNavClick(item.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(item.id);
+                }}
               >
                 {item.label}
-              </button>
+              </a>
             ))}
           </div>
           <div className="mobile-drawer-footer">

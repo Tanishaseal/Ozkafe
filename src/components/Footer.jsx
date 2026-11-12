@@ -30,7 +30,13 @@ export default function Footer({ setCurrentPage }) {
         <div className="footer-top">
           {/* 1. Logo & Brand */}
           <div className="footer-brand">
-            <div className="footer-logo-wrap">
+            <a 
+              href="/" 
+              className="footer-logo-wrap"
+              onClick={(e) => { e.preventDefault(); handleNav('home'); }}
+              aria-label="Ozkafe Home"
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
               <img 
                 src="/ozkafe-logo.png" 
                 alt="Ozkafe Emblem Logo" 
@@ -40,7 +46,7 @@ export default function Footer({ setCurrentPage }) {
                 <div className="footer-brand-title">OZKAFE</div>
                 <div className="footer-brand-tagline">Brewing Fresh • Est. 2016</div>
               </div>
-            </div>
+            </a>
             <p className="footer-brand-desc">
               Specialty Coffee Roastery Brand & Cafe Experience Center. Micro-batch shade-grown Arabica, estate microlots, artisan blends, and European dining.
             </p>
@@ -50,24 +56,24 @@ export default function Footer({ setCurrentPage }) {
           <div className="footer-nav">
             <h4 className="footer-heading">Navigation</h4>
             <div className="footer-links-list">
-              <button className="footer-link-btn" onClick={() => handleNav('home')}>
+              <a href="/" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('home'); }}>
                 Home
-              </button>
-              <button className="footer-link-btn" onClick={() => handleNav('about')}>
+              </a>
+              <a href="/aboutus" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('about'); }}>
                 About Us
-              </button>
-              <button className="footer-link-btn" onClick={() => handleNav('commercial')}>
+              </a>
+              <a href="/commercial" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('commercial'); }}>
                 Commercial
-              </button>
-              <button className="footer-link-btn" onClick={() => handleNav('single-origin')}>
+              </a>
+              <a href="/single-origin" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('single-origin'); }}>
                 Single Origin
-              </button>
-              <button className="footer-link-btn" onClick={() => handleNav('contact')}>
+              </a>
+              <a href="/contactus" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('contact'); }}>
                 Contact Us
-              </button>
-              <button className="footer-link-btn" onClick={() => handleNav('faq')}>
+              </a>
+              <a href="/faq" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('faq'); }}>
                 FAQ
-              </button>
+              </a>
             </div>
           </div>
 

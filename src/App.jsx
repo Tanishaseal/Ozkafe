@@ -22,8 +22,59 @@ const PAGE_TITLES = {
 
 const VALID_PAGES = ['home', 'about', 'commercial', 'single-origin', 'coffee-beans', 'contact', 'faq'];
 
+export const PAGE_ROUTES = {
+  home: '/',
+  about: '/aboutus',
+  commercial: '/commercial',
+  'single-origin': '/single-origin',
+  contact: '/contactus',
+  faq: '/faq',
+  'coffee-beans': '/coffee-beans'
+};
+
+const getPageFromLocation = () => {
+  if (typeof window === 'undefined') return 'home';
+
+  // 1. Check pathname (e.g. /, /home, /aboutus, /commercial, /single-origin, /contactus, /faq)
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  
+  if (pathname === '/' || pathname === '/home' || pathname === '/index.html') {
+    return 'home';
+  }
+  if (pathname === '/aboutus' || pathname === '/about' || pathname === '/about-us') {
+    return 'about';
+  }
+  if (pathname === '/commercial') {
+    return 'commercial';
+  }
+  if (pathname === '/single-origin' || pathname === '/singleorigin') {
+    return 'single-origin';
+  }
+  if (pathname === '/contactus' || pathname === '/contact' || pathname === '/contact-us') {
+    return 'contact';
+  }
+  if (pathname === '/faq') {
+    return 'faq';
+  }
+  if (pathname === '/coffee-beans' || pathname === '/beans') {
+    return 'coffee-beans';
+  }
+
+  // 2. Check hash (backward compatibility / legacy #home, #about etc.)
+  const hash = window.location.hash.replace('#', '').toLowerCase();
+  if (hash === 'home') return 'home';
+  if (hash === 'about' || hash === 'aboutus' || hash === 'about-us') return 'about';
+  if (hash === 'commercial') return 'commercial';
+  if (hash === 'single-origin' || hash === 'singleorigin') return 'single-origin';
+  if (hash === 'contact' || hash === 'contactus' || hash === 'contact-us') return 'contact';
+  if (hash === 'faq') return 'faq';
+  if (hash === 'coffee-beans') return 'coffee-beans';
+
+  return 'home';
+};
+
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState(getPageFromLocation);
 
   // Always on initial load and refresh: display loader with logo, then smoothly fade out
   useEffect(() => {
@@ -47,20 +98,26 @@ export default function App() {
     }
   }, []);
 
-  // Sync hash with current page and handle history navigation
+  // Listen for browser back / forward navigation (popstate) & clean up any trailing hash (#home)
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '').toLowerCase();
-      if (VALID_PAGES.includes(hash)) {
-        setCurrentPage(hash);
-      } else if (!hash) {
-        setCurrentPage('home');
-      }
+    const syncRouteFromLocation = () => {
+      const resolvedPage = getPageFromLocation();
+      setCurrentPage(resolvedPage);
     };
 
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    // If initial URL had a hash like #home, replace it cleanly with clean path (e.g. / for home)
+    if (window.location.hash) {
+      const initialPage = getPageFromLocation();
+      const cleanPath = PAGE_ROUTES[initialPage] || '/';
+      window.history.replaceState({ page: initialPage }, '', cleanPath);
+    }
+
+    window.addEventListener('popstate', syncRouteFromLocation);
+    window.addEventListener('hashchange', syncRouteFromLocation);
+    return () => {
+      window.removeEventListener('popstate', syncRouteFromLocation);
+      window.removeEventListener('hashchange', syncRouteFromLocation);
+    };
   }, []);
 
   // Update document title whenever currentPage changes
@@ -72,7 +129,13 @@ export default function App() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.location.hash = page;
+    const targetPath = PAGE_ROUTES[page] || '/';
+
+    // Update browser URL bar cleanly using HTML5 History API without #hash
+    if (window.location.pathname !== targetPath || window.location.hash) {
+      window.history.pushState({ page }, '', targetPath);
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

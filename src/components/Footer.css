@@ -111,6 +111,7 @@
   text-align: left;
   font-size: 0.95rem;
   color: var(--text-inverse-muted);
+  text-decoration: none;
   transition: all var(--transition-fast);
   display: inline-block;
   cursor: pointer;

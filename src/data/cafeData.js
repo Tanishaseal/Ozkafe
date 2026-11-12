@@ -13,7 +13,7 @@ export const CAFE_INFO = {
   phoneSecondary: "+91 9831133278",
   phones: ["+91 7605 023 132", "+91 9831133278"],
   phoneDisplay: "+91 7605 023 132 / +91 9831133278",
-  email: "hello@ozkafe.co.in",
+  email: "info@ozkafe.in",
   googleMapsUrl: "https://maps.google.com/?q=30/4+Broad+St+Ballygunge+Park+Kolkata",
   socials: {
     instagram: "https://www.instagram.com/ozkafecoffeeroaster/",
