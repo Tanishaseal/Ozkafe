@@ -4,6 +4,8 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
+import Commercial from './pages/Commercial';
+import SingleOrigin from './pages/SingleOrigin';
 import CoffeeBeans from './pages/CoffeeBeans';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
@@ -11,12 +13,14 @@ import FAQ from './pages/FAQ';
 const PAGE_TITLES = {
   home: 'Ozkafe | Specialty Coffee Roastery & Cafe Experience Center | Kolkata',
   about: 'About Us | Ozkafe Specialty Coffee Roastery & Cafe | Kolkata',
+  commercial: 'Commercial Roastery & Wholesale Solutions | Ozkafe Kolkata',
+  'single-origin': 'Single Origin Estate Coffees | Ozkafe Kolkata',
   'coffee-beans': 'Coffee Beans & Roastery Shelf | Ozkafe Kolkata',
   contact: 'Contact & Directions | Ozkafe Ballygunge | Kolkata',
   faq: 'Frequently Asked Questions | Ozkafe Specialty Coffee & Cafe'
 };
 
-const VALID_PAGES = ['home', 'about', 'coffee-beans', 'contact', 'faq'];
+const VALID_PAGES = ['home', 'about', 'commercial', 'single-origin', 'coffee-beans', 'contact', 'faq'];
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -90,6 +94,16 @@ export default function App() {
         {currentPage === 'about' && (
           <About 
             setCurrentPage={handlePageChange} 
+          />
+        )}
+        {currentPage === 'commercial' && (
+          <Commercial 
+            setCurrentPage={handlePageChange}
+          />
+        )}
+        {currentPage === 'single-origin' && (
+          <SingleOrigin 
+            setCurrentPage={handlePageChange}
           />
         )}
         {currentPage === 'coffee-beans' && (

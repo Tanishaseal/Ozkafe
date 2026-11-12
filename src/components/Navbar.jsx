@@ -28,8 +28,9 @@ export default function Navbar({ currentPage, setCurrentPage }) {
 
   const navItems = [
     { id: 'home', label: 'Home' },
-    { id: 'coffee-beans', label: 'Coffee Beans' },
-    { id: 'about', label: 'About' },
+    { id: 'about', label: 'About Us' },
+    { id: 'commercial', label: 'Commercial' },
+    { id: 'single-origin', label: 'Single Origin' },
     { id: 'contact', label: 'Contact Us' },
     { id: 'faq', label: 'FAQ' }
   ];
@@ -72,14 +73,12 @@ export default function Navbar({ currentPage, setCurrentPage }) {
               </svg>
               <span>{CAFE_INFO.socials.instagramHandle}</span>
             </a>
-            <a 
-              href={`tel:${CAFE_INFO.phone}`} 
-              className="topbar-item"
-              aria-label={`Call Ozkafe at ${CAFE_INFO.phone}`}
-            >
+            <div className="topbar-item">
               <Phone size={13} aria-hidden="true" />
-              <span>{CAFE_INFO.phone}</span>
-            </a>
+              <a href="tel:+917605023132" style={{ color: 'inherit' }} aria-label="Call +91 7605 023 132">+91 7605 023 132</a>
+              <span style={{ margin: '0 4px', opacity: 0.7 }}>/</span>
+              <a href="tel:+919831133278" style={{ color: 'inherit' }} aria-label="Call +91 9831133278">+91 9831133278</a>
+            </div>
           </div>
         </div>
       </div>
@@ -184,7 +183,9 @@ export default function Navbar({ currentPage, setCurrentPage }) {
             <div className="mobile-drawer-info">
               <p><strong>Hours:</strong> Daily 12:00 PM – 10:00 PM</p>
               <p>30/4, Broad St, Ballygunge Park, Kolkata</p>
-              <p><a href={`tel:${CAFE_INFO.phone}`}>{CAFE_INFO.phone}</a></p>
+              <p>
+                <a href="tel:+917605023132">+91 7605 023 132</a> / <a href="tel:+919831133278">+91 9831133278</a>
+              </p>
             </div>
           </div>
         </div>

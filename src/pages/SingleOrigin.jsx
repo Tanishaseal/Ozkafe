@@ -1,0 +1,167 @@
+import React from 'react';
+import { Compass, Sprout, Coffee, Sparkles, Phone, Mail, ArrowLeft, MapPin } from 'lucide-react';
+import { CAFE_INFO } from '../data/cafeData';
+import './UnderConstruction.css';
+
+export default function SingleOrigin({ setCurrentPage }) {
+  const navigateTo = (page) => {
+    if (setCurrentPage) setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="uc-page animate-fade-in">
+      {/* 1. Page Header Section with Dark Coffee Beans Hero Background */}
+      <header className="page-header-hero">
+        <div 
+          className="page-header-bg" 
+          style={{ backgroundImage: "url('/images/headers/header_bg_beans.jpg')" }} 
+        />
+        <div className="page-header-overlay" />
+
+        {/* Botanical Illustrations */}
+        <img 
+          src="/images/illustrations/coffee_botanical_branch_light.png" 
+          alt="" 
+          className="art-watermark-dark"
+          style={{ position: 'absolute', left: '-20px', top: '-10px', width: '240px', opacity: 0.14 }}
+          aria-hidden="true"
+        />
+        <img 
+          src="/images/illustrations/coffee_beans_sketch_light.png" 
+          alt="" 
+          className="art-watermark-dark"
+          style={{ position: 'absolute', right: '-20px', bottom: '0px', width: '220px', opacity: 0.14 }}
+          aria-hidden="true"
+        />
+
+        <div className="container page-header-content">
+          <h1>Single Origin</h1>
+          {/* Breadcrumb Trail */}
+          <nav className="header-breadcrumb" aria-label="Breadcrumb">
+            <button onClick={() => navigateTo('home')} className="breadcrumb-link">Home</button>
+            <span className="breadcrumb-sep">&gt;</span>
+            <span className="breadcrumb-current">Single Origin</span>
+          </nav>
+        </div>
+      </header>
+
+      {/* 2. Main Under Construction Content */}
+      <section className="uc-main-section">
+        {/* Subtle Watermarks */}
+        <img 
+          src="/images/illustrations/coffee_botanical_branch.png" 
+          alt="" 
+          className="uc-watermark-left" 
+          aria-hidden="true"
+        />
+        <img 
+          src="/images/illustrations/coffee_beans_sketch.png" 
+          alt="" 
+          className="uc-watermark-right" 
+          aria-hidden="true"
+        />
+
+        <div className="container uc-content-wrapper">
+          <div className="uc-card">
+            {/* Badge */}
+            <div className="uc-badge-wrap">
+              <span className="uc-badge">
+                <span className="uc-badge-dot" />
+                Under Construction • Coming Soon
+              </span>
+            </div>
+
+            {/* Icon */}
+            <div className="uc-icon-wrap">
+              <Compass size={36} aria-hidden="true" />
+            </div>
+
+            {/* Titles */}
+            <h2 className="uc-title">Single Origin Estate Coffees</h2>
+            <p className="uc-tagline">
+              Direct-Trade Shade-Grown Arabicas from India's Premier Coffee Hills
+            </p>
+            <p className="uc-desc">
+              We are carefully cupping and curating our latest single origin estate harvest lots from Chikmagalur, Coorg, and the Biligirirangana Hills. This dedicated shelf of micro-lots and origin tasting profiles is under construction and will launch soon.
+            </p>
+
+            {/* Feature Previews */}
+            <div className="uc-features-title">What to Expect from Our Single Origin Shelf</div>
+            <div className="uc-features-grid">
+              <div className="uc-feature-item">
+                <div className="uc-feature-icon">
+                  <Sprout size={20} aria-hidden="true" />
+                </div>
+                <h4 className="uc-feature-heading">100% Traceable Microlots</h4>
+                <p className="uc-feature-text">
+                  Direct relationships with estate planters. Complete harvest transparency with varietal, elevation, and terroir breakdowns for every lot.
+                </p>
+              </div>
+
+              <div className="uc-feature-item">
+                <div className="uc-feature-icon">
+                  <Coffee size={20} aria-hidden="true" />
+                </div>
+                <h4 className="uc-feature-heading">Artisanal Processing</h4>
+                <p className="uc-feature-text">
+                  Carefully processed washed, honey sun-dried, and natural anaerobic fermentations designed to celebrate distinct fruit and floral notes.
+                </p>
+              </div>
+
+              <div className="uc-feature-item">
+                <div className="uc-feature-icon">
+                  <Sparkles size={20} aria-hidden="true" />
+                </div>
+                <h4 className="uc-feature-heading">Precision Roasting</h4>
+                <p className="uc-feature-text">
+                  Custom roast curves developed on our in-house micro-roaster to unlock bright stone fruit acidity, jasmine florals, and sweet caramel body.
+                </p>
+              </div>
+            </div>
+
+            {/* Direct Contact Box */}
+            <div className="uc-contact-box">
+              <h4 className="uc-contact-box-title">Looking to sample or purchase current single origin roasts?</h4>
+              <p className="uc-contact-box-sub">
+                Our fresh roast coffee beans are available right now at our Ballygunge Cafe Experience Center, and by phone or email order.
+              </p>
+              <div className="uc-contact-lines">
+                <div className="uc-contact-item">
+                  <Phone size={17} aria-hidden="true" />
+                  <span>
+                    <a href="tel:+917605023132">+91 7605 023 132</a> / <a href="tel:+919831133278">+91 9831133278</a>
+                  </span>
+                </div>
+                <div className="uc-contact-item">
+                  <Mail size={17} aria-hidden="true" />
+                  <span>
+                    <a href={`mailto:${CAFE_INFO.email}`}>{CAFE_INFO.email}</a>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="uc-action-buttons">
+              <button 
+                className="btn btn-primary"
+                onClick={() => navigateTo('contact')}
+              >
+                <MapPin size={16} aria-hidden="true" />
+                <span>Visit Ballygunge Cafe</span>
+              </button>
+              <button 
+                className="btn btn-outline"
+                onClick={() => navigateTo('home')}
+              >
+                <ArrowLeft size={16} aria-hidden="true" />
+                <span>Back to Home</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

@@ -53,11 +53,14 @@ export default function Footer({ setCurrentPage }) {
               <button className="footer-link-btn" onClick={() => handleNav('home')}>
                 Home
               </button>
-              <button className="footer-link-btn" onClick={() => handleNav('coffee-beans')}>
-                Coffee Beans
-              </button>
               <button className="footer-link-btn" onClick={() => handleNav('about')}>
-                About Ozkafe
+                About Us
+              </button>
+              <button className="footer-link-btn" onClick={() => handleNav('commercial')}>
+                Commercial
+              </button>
+              <button className="footer-link-btn" onClick={() => handleNav('single-origin')}>
+                Single Origin
               </button>
               <button className="footer-link-btn" onClick={() => handleNav('contact')}>
                 Contact Us
@@ -92,7 +95,11 @@ export default function Footer({ setCurrentPage }) {
                 <Phone size={18} aria-hidden="true" />
                 <div>
                   <strong>Phone</strong>
-                  <a href={`tel:${CAFE_INFO.phone}`} style={{ color: 'inherit' }}>{CAFE_INFO.phone}</a>
+                  <div>
+                    <a href="tel:+917605023132" style={{ color: 'inherit' }}>+91 7605 023 132</a>
+                    {' / '}
+                    <a href="tel:+919831133278" style={{ color: 'inherit' }}>+91 9831133278</a>
+                  </div>
                 </div>
               </div>
 

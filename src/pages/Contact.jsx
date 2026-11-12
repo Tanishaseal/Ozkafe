@@ -77,7 +77,7 @@ export default function Contact({ setCurrentPage }) {
           <nav className="header-breadcrumb" aria-label="Breadcrumb">
             <button onClick={() => navigateTo('home')} className="breadcrumb-link">Home</button>
             <span className="breadcrumb-sep">&gt;</span>
-            <span className="breadcrumb-current">Contact</span>
+            <span className="breadcrumb-current">Contact Us</span>
           </nav>
         </div>
       </header>
@@ -145,7 +145,9 @@ export default function Contact({ setCurrentPage }) {
                 </div>
                 <div className="contact-card-content">
                   <h4>Direct Inquiries & Cafe Help</h4>
-                  <p><a href={`tel:${CAFE_INFO.phone}`}>{CAFE_INFO.phone}</a></p>
+                  <p>
+                    <a href="tel:+917605023132">+91 7605 023 132</a> / <a href="tel:+919831133278">+91 9831133278</a>
+                  </p>
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                     Call us for directions, takeaway pickups, or coffee recommendations.
                   </p>
@@ -213,7 +215,8 @@ export default function Contact({ setCurrentPage }) {
                   </div>
 
                   <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                    We usually respond within a few hours. For urgent questions or table reservations, please call {CAFE_INFO.phone}.
+                    We usually respond within a few hours. For urgent questions or table reservations, please call{' '}
+                    <a href="tel:+917605023132" style={{ color: 'inherit', fontWeight: 600 }}>+91 7605 023 132</a> / <a href="tel:+919831133278" style={{ color: 'inherit', fontWeight: 600 }}>+91 9831133278</a>.
                   </p>
 
                   <button className="btn btn-primary" onClick={handleReset}>
