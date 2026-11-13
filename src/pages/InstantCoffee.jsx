@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  Coffee, Search, X, Phone, MapPin, Package, Zap
+  Coffee, Search, X, Phone, MapPin, Zap
 } from 'lucide-react';
 import { INSTANT_COFFEE_CATEGORIES, INSTANT_COFFEES } from '../data/coffeeBeansData';
 import { CAFE_INFO } from '../data/cafeData';
@@ -145,25 +145,6 @@ export default function InstantCoffee({ setCurrentPage }) {
         />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          {/* Optional Glass Bottle Packaging Highlight (Direct from PDF Page 2) */}
-          <div className="instant-bottle-notice">
-            <div className="bottle-notice-icon">
-              <Package size={22} aria-hidden="true" />
-            </div>
-            <div className="bottle-notice-text">
-              <h4>Optional Premium Glass Bottle Packaging</h4>
-              <p>
-                All instant coffees are packed in high-barrier pouches by default. You can choose premium amber glass bottles (with tamper-proof induction foil seal and custom label):
-              </p>
-              <div className="bottle-notice-pills">
-                <span className="bottle-pill">+ ₹30 / 50g Bottle</span>
-                <span className="bottle-pill">+ ₹50 / 100g Bottle</span>
-                <span className="bottle-pill">+ ₹80 / 250g Bottle</span>
-                <span className="bottle-pill" style={{ background: '#FAF6F0', borderColor: '#E2DCD3' }}>Carton Charges Extra for Bulk Shipping</span>
-              </div>
-            </div>
-          </div>
-
           {/* 3 Quick Jump Category Pills */}
           <nav className="beans-category-quicknav" aria-label="Quick Jump to Instant Coffee Category">
             <div className="quicknav-outer-wrap">
