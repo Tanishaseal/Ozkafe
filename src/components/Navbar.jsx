@@ -31,6 +31,7 @@ export default function Navbar({ currentPage, setCurrentPage }) {
     { id: 'about', label: 'About Us', path: '/aboutus' },
     { id: 'commercial', label: 'Commercial', path: '/commercial' },
     { id: 'single-origin', label: 'Single Origin', path: '/single-origin' },
+    { id: 'instant-coffee', label: 'Instant Coffee', path: '/instant-coffee' },
     { id: 'contact', label: 'Contact Us', path: '/contactus' },
     { id: 'faq', label: 'FAQ', path: '/faq' }
   ];

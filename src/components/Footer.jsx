@@ -68,6 +68,9 @@ export default function Footer({ setCurrentPage }) {
               <a href="/single-origin" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('single-origin'); }}>
                 Single Origin
               </a>
+              <a href="/instant-coffee" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('instant-coffee'); }}>
+                Instant Coffee
+              </a>
               <a href="/contactus" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('contact'); }}>
                 Contact Us
               </a>

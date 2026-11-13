@@ -820,3 +820,48 @@ export const COFFEE_BEANS_DATA = [
     }
   }
 ];
+
+// ============================================================================
+// Partitioned Datasets by Navigation Page (Sourced from Coffee Pricing PDF)
+// ============================================================================
+
+// 1. Commercial Page: Only Commercial Blends and South Indian Filter Coffee
+export const COMMERCIAL_CATEGORIES = COFFEE_CATEGORIES.filter(cat => 
+  ['commercial-blends', 'south-indian-filter'].includes(cat.id)
+);
+export const COMMERCIAL_COFFEES = COFFEE_BEANS_DATA.filter(coffee => 
+  ['commercial-blends', 'south-indian-filter'].includes(coffee.categoryId)
+);
+
+// 2. Single Origin Page: All Single Origin & Estate Harvests till Nandan Estate
+export const SINGLE_ORIGIN_CATEGORIES = COFFEE_CATEGORIES.filter(cat => 
+  [
+    'speciality-microlot',
+    'baarbara-estate',
+    'harley-estate',
+    'msp-cauvery-peak',
+    'vaishnavi-estate',
+    'msp-coffee-estate',
+    'nandan-estate'
+  ].includes(cat.id)
+);
+export const SINGLE_ORIGIN_COFFEES = COFFEE_BEANS_DATA.filter(coffee => 
+  [
+    'speciality-microlot',
+    'baarbara-estate',
+    'harley-estate',
+    'msp-cauvery-peak',
+    'vaishnavi-estate',
+    'msp-coffee-estate',
+    'nandan-estate'
+  ].includes(coffee.categoryId)
+);
+
+// 3. Instant Coffee Page: Page 2 of the PDF (Instant, Flavoured Instant, Liquid Cold Brew)
+export const INSTANT_COFFEE_CATEGORIES = COFFEE_CATEGORIES.filter(cat => 
+  ['instant-coffee', 'flavoured-instant', 'cold-brew'].includes(cat.id)
+);
+export const INSTANT_COFFEES = COFFEE_BEANS_DATA.filter(coffee => 
+  ['instant-coffee', 'flavoured-instant', 'cold-brew'].includes(coffee.categoryId)
+);
+

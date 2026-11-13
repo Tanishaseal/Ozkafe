@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Commercial from './pages/Commercial';
 import SingleOrigin from './pages/SingleOrigin';
+import InstantCoffee from './pages/InstantCoffee';
 import CoffeeBeans from './pages/CoffeeBeans';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
@@ -13,20 +14,22 @@ import FAQ from './pages/FAQ';
 const PAGE_TITLES = {
   home: 'Ozkafe | Specialty Coffee Roastery & Cafe Experience Center | Kolkata',
   about: 'About Us | Ozkafe Specialty Coffee Roastery & Cafe | Kolkata',
-  commercial: 'Commercial Roastery & Wholesale Solutions | Ozkafe Kolkata',
+  commercial: 'Commercial Blends & Wholesale Solutions | Ozkafe Kolkata',
   'single-origin': 'Single Origin Estate Coffees | Ozkafe Kolkata',
+  'instant-coffee': 'Instant Coffee & Cold Brew | Ozkafe Kolkata',
   'coffee-beans': 'Coffee Beans & Roastery Shelf | Ozkafe Kolkata',
   contact: 'Contact & Directions | Ozkafe Ballygunge | Kolkata',
   faq: 'Frequently Asked Questions | Ozkafe Specialty Coffee & Cafe'
 };
 
-const VALID_PAGES = ['home', 'about', 'commercial', 'single-origin', 'coffee-beans', 'contact', 'faq'];
+const VALID_PAGES = ['home', 'about', 'commercial', 'single-origin', 'instant-coffee', 'coffee-beans', 'contact', 'faq'];
 
 export const PAGE_ROUTES = {
   home: '/',
   about: '/aboutus',
   commercial: '/commercial',
   'single-origin': '/single-origin',
+  'instant-coffee': '/instant-coffee',
   contact: '/contactus',
   faq: '/faq',
   'coffee-beans': '/coffee-beans'
@@ -35,7 +38,7 @@ export const PAGE_ROUTES = {
 const getPageFromLocation = () => {
   if (typeof window === 'undefined') return 'home';
 
-  // 1. Check pathname (e.g. /, /home, /aboutus, /commercial, /single-origin, /contactus, /faq)
+  // 1. Check pathname (e.g. /, /home, /aboutus, /commercial, /single-origin, /instant-coffee, /contactus, /faq)
   const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
   
   if (pathname === '/' || pathname === '/home' || pathname === '/index.html') {
@@ -49,6 +52,9 @@ const getPageFromLocation = () => {
   }
   if (pathname === '/single-origin' || pathname === '/singleorigin') {
     return 'single-origin';
+  }
+  if (pathname === '/instant-coffee' || pathname === '/instantcoffee' || pathname === '/instant') {
+    return 'instant-coffee';
   }
   if (pathname === '/contactus' || pathname === '/contact' || pathname === '/contact-us') {
     return 'contact';
@@ -66,6 +72,7 @@ const getPageFromLocation = () => {
   if (hash === 'about' || hash === 'aboutus' || hash === 'about-us') return 'about';
   if (hash === 'commercial') return 'commercial';
   if (hash === 'single-origin' || hash === 'singleorigin') return 'single-origin';
+  if (hash === 'instant-coffee' || hash === 'instantcoffee' || hash === 'instant') return 'instant-coffee';
   if (hash === 'contact' || hash === 'contactus' || hash === 'contact-us') return 'contact';
   if (hash === 'faq') return 'faq';
   if (hash === 'coffee-beans') return 'coffee-beans';
@@ -192,6 +199,11 @@ export default function App() {
         )}
         {currentPage === 'single-origin' && (
           <SingleOrigin 
+            setCurrentPage={handlePageChange}
+          />
+        )}
+        {currentPage === 'instant-coffee' && (
+          <InstantCoffee 
             setCurrentPage={handlePageChange}
           />
         )}
