@@ -65,11 +65,12 @@ export default function Home({ setCurrentPage }) {
           ref={videoRef}
           className="hero-video-media"
           src="/videos/home_video.mp4"
-          poster="/images/hero_coffee.jpg"
+          poster="/images/hero_coffee.webp"
           autoPlay
           muted={isMuted}
           playsInline
           loop
+          preload="metadata"
           onTimeUpdate={handleTimeUpdate}
         />
         <div className="hero-video-overlay" />

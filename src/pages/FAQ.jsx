@@ -46,23 +46,42 @@ export default function FAQ({ setCurrentPage }) {
     <div className="faq-page animate-fade-in">
       {/* 1. Page Header Section with Dark Cafe Tabletop Hero Background */}
       <header className="faq-header page-header-hero">
-        <div 
-          className="page-header-bg" 
-          style={{ backgroundImage: "url('/images/headers/header_bg_faq.jpg')" }} 
-        />
+        <div className="page-header-bg" aria-hidden="true">
+          <img 
+            src="/images/headers/header_bg_faq.webp" 
+            alt="" 
+            className="page-header-bg-img"
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            onError={(e) => { e.currentTarget.src = '/images/headers/header_bg_faq.jpg'; }}
+          />
+        </div>
         <div className="page-header-overlay" />
 
         {/* Botanical Illustrations */}
         <img 
-          src="/images/illustrations/coffee_botanical_branch_light.png" 
+          src="/images/illustrations/coffee_botanical_branch_light.webp" 
           alt="" 
           className="art-watermark-dark faq-header-leaf-decor" 
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          width="240"
+          height="321"
+          onError={(e) => { e.currentTarget.src = '/images/illustrations/coffee_botanical_branch_light.png'; }}
           aria-hidden="true"
         />
         <img 
-          src="/images/illustrations/coffee_beans_sketch_light.png" 
+          src="/images/illustrations/coffee_beans_sketch_light.webp" 
           alt="" 
           className="art-watermark-dark faq-header-beans-decor" 
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          width="220"
+          height="139"
+          onError={(e) => { e.currentTarget.src = '/images/illustrations/coffee_beans_sketch_light.png'; }}
           aria-hidden="true"
         />
 

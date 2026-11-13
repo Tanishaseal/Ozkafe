@@ -239,12 +239,12 @@ export const ABOUT_MILESTONES = [
     description: "Ozkafe was established in Kolkata, West Bengal with a singular obsession: to bring world-class specialty coffee roasting directly to the City of Joy."
   },
   {
-    year: "2018",
+    year: "2023",
     title: "The Ballygunge Experience Center",
     description: "Opened our flagship cafe and roastery experience center on Broad Street, Ballygunge Park, featuring an open micro-roasting floor and cupping table."
   },
   {
-    year: "2021",
+    year: "2025",
     title: "Artisanal Kitchen & Bakery Expansion",
     description: "Expanded our culinary vision to include genuine wood-fired pizzas, continental dining, gourmet burgers, salads, and fresh European-style bakery items."
   },

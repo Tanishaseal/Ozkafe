@@ -98,6 +98,32 @@ export default function App() {
     }
   }, []);
 
+  // Idle prefetch header backgrounds for subpages to ensure instantaneous navigation across devices
+  useEffect(() => {
+    const prefetchAssets = () => {
+      const assets = [
+        '/images/headers/header_bg_about.webp',
+        '/images/headers/header_bg_beans.webp',
+        '/images/headers/header_bg_contact.webp',
+        '/images/headers/header_bg_faq.webp',
+        '/images/illustrations/coffee_botanical_branch_light.webp',
+        '/images/illustrations/coffee_beans_sketch_light.webp'
+      ];
+      assets.forEach(url => {
+        const img = new Image();
+        img.src = url;
+      });
+    };
+
+    if ('requestIdleCallback' in window) {
+      const idleId = window.requestIdleCallback(prefetchAssets, { timeout: 1500 });
+      return () => window.cancelIdleCallback(idleId);
+    } else {
+      const timerId = setTimeout(prefetchAssets, 1000);
+      return () => clearTimeout(timerId);
+    }
+  }, []);
+
   // Listen for browser back / forward navigation (popstate) & clean up any trailing hash (#home)
   useEffect(() => {
     const syncRouteFromLocation = () => {

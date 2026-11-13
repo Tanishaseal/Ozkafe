@@ -94,9 +94,15 @@ export default function Navbar({ currentPage, setCurrentPage }) {
             aria-label="Ozkafe Home"
           >
             <img 
-              src="/ozkafe-logo.png" 
+              src="/ozkafe-logo.webp" 
               alt="Ozkafe Emblem Logo" 
               className="nav-logo-img" 
+              width="38"
+              height="38"
+              fetchPriority="high"
+              loading="eager"
+              decoding="async"
+              onError={(e) => { e.currentTarget.src = '/ozkafe-logo.png'; }}
             />
             <div className="nav-brand-text">
               <span className="brand-title">OZKAFE</span>

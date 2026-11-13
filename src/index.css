@@ -447,7 +447,7 @@ p {
    ========================================================================== */
 .page-header-hero {
   position: relative;
-  background-color: var(--color-espresso-950);
+  background-color: #170A03;
   color: var(--color-white);
   min-height: 250px;
   display: flex;
@@ -457,6 +457,7 @@ p {
   border-bottom: 2px solid var(--color-roast-700);
   text-align: center;
   overflow: hidden;
+  contain: paint;
 }
 
 .page-header-content {
@@ -477,6 +478,8 @@ p {
   inset: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  background-color: #170A03;
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -484,6 +487,18 @@ p {
   transform: scale(1.03);
   transition: transform 12s cubic-bezier(0.25, 1, 0.5, 1);
   z-index: 0;
+  pointer-events: none;
+}
+
+.page-header-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.3s ease;
 }
 
 .page-header-hero:hover .page-header-bg {

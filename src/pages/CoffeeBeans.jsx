@@ -165,23 +165,42 @@ export default function CoffeeBeans({ setCurrentPage }) {
     <div className="coffee-beans-page animate-fade-in">
       {/* 1. Header Section with Dark Photographic Coffee Hero Background */}
       <header className="beans-header-section page-header-hero">
-        <div 
-          className="page-header-bg" 
-          style={{ backgroundImage: "url('/images/headers/header_bg_beans.jpg')" }} 
-        />
+        <div className="page-header-bg" aria-hidden="true">
+          <img 
+            src="/images/headers/header_bg_beans.webp" 
+            alt="" 
+            className="page-header-bg-img"
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            onError={(e) => { e.currentTarget.src = '/images/headers/header_bg_beans.jpg'; }}
+          />
+        </div>
         <div className="page-header-overlay" />
 
         {/* Decorative Botanical Illustrations */}
         <img 
-          src="/images/illustrations/coffee_botanical_branch_light.png" 
+          src="/images/illustrations/coffee_botanical_branch_light.webp" 
           alt="" 
           className="art-watermark-dark beans-header-leaf-decor" 
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          width="240"
+          height="321"
+          onError={(e) => { e.currentTarget.src = '/images/illustrations/coffee_botanical_branch_light.png'; }}
           aria-hidden="true"
         />
         <img 
-          src="/images/illustrations/coffee_beans_sketch_light.png" 
+          src="/images/illustrations/coffee_beans_sketch_light.webp" 
           alt="" 
           className="art-watermark-dark beans-header-beans-decor" 
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          width="220"
+          height="139"
+          onError={(e) => { e.currentTarget.src = '/images/illustrations/coffee_beans_sketch_light.png'; }}
           aria-hidden="true"
         />
 

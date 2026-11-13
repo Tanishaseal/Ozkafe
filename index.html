@@ -10,8 +10,47 @@
     
     <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+
+    <!-- Early Preload for Critical Header Assets & Logos -->
+    <link rel="preload" as="image" href="/ozkafe-logo.webp" type="image/webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/illustrations/coffee_botanical_branch_light.webp" type="image/webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/illustrations/coffee_beans_sketch_light.webp" type="image/webp" fetchpriority="high" />
+
+    <!-- Instant Route Header Image Preloader (Runs before bundle execution) -->
+    <script>
+      (function() {
+        try {
+          var p = (window.location.pathname || '').toLowerCase();
+          var h = (window.location.hash || '').toLowerCase();
+          var bg = '/images/headers/header_bg_faq.webp';
+          if (p.indexOf('about') !== -1 || h.indexOf('about') !== -1) {
+            bg = '/images/headers/header_bg_about.webp';
+          } else if (p.indexOf('contact') !== -1 || h.indexOf('contact') !== -1) {
+            bg = '/images/headers/header_bg_contact.webp';
+          } else if (p.indexOf('bean') !== -1 || h.indexOf('bean') !== -1) {
+            bg = '/images/headers/header_bg_beans.webp';
+          } else if (p.indexOf('single') !== -1 || h.indexOf('single') !== -1) {
+            bg = '/images/headers/header_bg_beans.webp';
+          } else if (p.indexOf('commercial') !== -1 || h.indexOf('commercial') !== -1) {
+            bg = '/images/headers/header_bg_about.webp';
+          } else if (p === '/' || p === '' || p.indexOf('home') !== -1) {
+            bg = '/images/hero_coffee.webp';
+          }
+
+          if (bg) {
+            var l = document.createElement('link');
+            l.rel = 'preload';
+            l.as = 'image';
+            l.href = bg;
+            l.type = 'image/webp';
+            l.setAttribute('fetchpriority', 'high');
+            document.head.appendChild(l);
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Ozkafe Specialty Coffee Initial & Refresh Page Loader Styles -->
     <style>
@@ -197,7 +236,7 @@
         <div class="loader-logo-wrap">
           <div class="loader-ring-outer"></div>
           <div class="loader-ring-pulse"></div>
-          <img src="/ozkafe-logo.png" alt="Ozkafe Specialty Coffee Roastery" class="loader-logo-img" />
+          <img src="/ozkafe-logo.webp" alt="Ozkafe Specialty Coffee Roastery" class="loader-logo-img" width="82" height="82" fetchpriority="high" onerror="this.src='/ozkafe-logo.png'" />
         </div>
 
         <!-- Brand Typography -->
