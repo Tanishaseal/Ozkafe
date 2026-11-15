@@ -94,22 +94,29 @@
   border-radius: var(--radius-full);
   font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid var(--border-light);
+  border: 1.5px solid var(--border-light);
   background-color: var(--color-white);
   color: var(--text-secondary);
-  transition: all var(--transition-fast);
+  transition: all 0.22s ease;
   cursor: pointer;
 }
 
 .faq-cat-btn:hover {
-  border-color: var(--border-medium);
-  color: var(--color-espresso-800);
+  border-color: var(--color-caramel-400);
+  color: var(--color-espresso-900);
+  font-weight: 700;
+  text-shadow: 0 0 0.35px currentColor;
+  background-color: var(--color-cream-50);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(41, 20, 8, 0.08);
 }
 
 .faq-cat-btn.active {
   background-color: var(--color-espresso-800);
   color: var(--color-white);
   border-color: var(--color-espresso-800);
+  font-weight: 700;
+  transform: none;
 }
 
 /* Accordion */

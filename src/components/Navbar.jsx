@@ -118,6 +118,7 @@ export default function Navbar({ currentPage, setCurrentPage }) {
                 key={item.id}
                 href={item.path}
                 role="menuitem"
+                data-text={item.label}
                 className={`nav-link ${currentPage === item.id ? 'active' : ''}`}
                 onClick={(e) => {
                   e.preventDefault();
@@ -176,6 +177,7 @@ export default function Navbar({ currentPage, setCurrentPage }) {
               <a
                 key={item.id}
                 href={item.path}
+                data-text={item.label}
                 className={`nav-link ${currentPage === item.id ? 'active' : ''}`}
                 onClick={(e) => {
                   e.preventDefault();

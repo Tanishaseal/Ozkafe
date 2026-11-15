@@ -22,9 +22,7 @@ const PAGE_TITLES = {
   faq: 'Frequently Asked Questions | Ozkafe Specialty Coffee & Cafe'
 };
 
-const VALID_PAGES = ['home', 'about', 'commercial', 'single-origin', 'instant-coffee', 'coffee-beans', 'contact', 'faq'];
-
-export const PAGE_ROUTES = {
+const PAGE_ROUTES = {
   home: '/',
   about: '/aboutus',
   commercial: '/commercial',

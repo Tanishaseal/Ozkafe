@@ -240,6 +240,8 @@
   background: #1B0C04;
   color: #ffffff;
   border-color: #1B0C04;
+  font-weight: 700;
+  text-shadow: 0 0 0.45px currentColor;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(27, 12, 4, 0.22);
 }

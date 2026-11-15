@@ -40,11 +40,30 @@
   gap: 0.4rem;
   color: var(--color-cream-100);
   font-size: 0.8rem;
+  text-decoration: none;
 }
 
 .topbar-item svg {
   color: var(--color-biscuit);
   flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.topbar a {
+  color: var(--color-cream-100);
+  text-decoration: none;
+  transition: color 0.2s ease, font-weight 0.2s ease, text-shadow 0.2s ease;
+}
+
+.topbar a:hover {
+  color: var(--color-biscuit);
+  font-weight: 600;
+  text-shadow: 0 0 0.45px currentColor;
+}
+
+.topbar a:hover svg {
+  color: var(--color-white);
+  transform: scale(1.1);
 }
 
 .topbar-tag {
@@ -106,6 +125,7 @@
   letter-spacing: 0.04em;
   color: var(--color-espresso-800);
   line-height: 1.1;
+  transition: color var(--transition-fast);
 }
 
 .brand-sub {
@@ -114,13 +134,22 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-caramel-400);
+  transition: color var(--transition-fast);
+}
+
+.nav-brand:hover .brand-title {
+  color: var(--color-caramel-400);
+}
+
+.nav-brand:hover .brand-sub {
+  color: var(--color-espresso-800);
 }
 
 /* Nav Links */
 .nav-links {
   display: flex;
   align-items: center;
-  gap: clamp(0.75rem, 1.35vw, 1.85rem);
+  gap: clamp(0.65rem, 1.2vw, 1.75rem);
 }
 
 .nav-link {
@@ -128,16 +157,36 @@
   font-weight: 500;
   color: var(--text-secondary);
   text-decoration: none;
-  transition: color var(--transition-fast);
   position: relative;
-  padding: 0.4rem 0;
+  padding: 0.45rem 0.15rem;
   cursor: pointer;
   background: none;
   border: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.22s ease, font-weight 0.22s ease, text-shadow 0.22s ease;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* Zero-layout-shift reservation: invisibly renders bold string to keep width stable */
+.nav-link::before {
+  display: block;
+  content: attr(data-text);
+  font-weight: 700;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
 }
 
 .nav-link:hover {
   color: var(--color-espresso-800);
+  font-weight: 700;
+  text-shadow: 0 0 0.45px currentColor;
 }
 
 .nav-link.active {
@@ -145,15 +194,31 @@
   font-weight: 700;
 }
 
-.nav-link.active::after {
+/* Dynamic animated underline for hover and active */
+.nav-link::after {
   content: '';
   position: absolute;
   bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: var(--color-espresso-800);
+  left: 50%;
+  width: 0;
+  height: 2.5px;
+  background-color: var(--color-caramel-400);
   border-radius: 2px;
+  transition: width 0.24s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              left 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+              background-color 0.24s ease;
+}
+
+.nav-link:hover::after {
+  left: 0;
+  width: 100%;
+  background-color: var(--color-caramel-400);
+}
+
+.nav-link.active::after {
+  left: 0;
+  width: 100%;
+  background-color: var(--color-espresso-800);
 }
 
 /* Nav Actions */
@@ -246,10 +311,30 @@
 
   .mobile-drawer .nav-link {
     font-size: 1.1rem;
-    padding: 0.85rem 0.5rem;
+    font-weight: 500;
+    padding: 0.85rem 0.75rem;
     border-bottom: 1px solid var(--border-light);
     text-align: left;
     width: 100%;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    border-radius: var(--radius-sm);
+    transition: all 0.22s ease;
+  }
+
+  .mobile-drawer .nav-link::before {
+    display: none;
+  }
+
+  .mobile-drawer .nav-link:hover,
+  .mobile-drawer .nav-link:focus {
+    color: var(--color-espresso-800);
+    font-weight: 700;
+    text-shadow: 0 0 0.35px currentColor;
+    background-color: var(--color-cream-50);
+    padding-left: 1.15rem;
+    border-left: 3px solid var(--color-caramel-400);
   }
 
   .mobile-drawer .nav-link.active::after {
@@ -257,8 +342,10 @@
   }
 
   .mobile-drawer .nav-link.active {
+    color: var(--color-espresso-800);
+    font-weight: 700;
     background-color: var(--color-cream-50);
-    padding-left: 0.75rem;
+    padding-left: 1.15rem;
     border-left: 3px solid var(--color-espresso-800);
   }
 

@@ -552,15 +552,20 @@ p {
   color: var(--color-biscuit);
   background: none;
   border: none;
-  padding: 0;
+  padding: 0.15rem 0.35rem;
   font: inherit;
+  font-weight: 500;
   cursor: pointer;
-  transition: color var(--transition-fast);
+  border-radius: var(--radius-sm);
+  transition: color 0.2s ease, font-weight 0.2s ease, text-shadow 0.2s ease;
 }
 
 .breadcrumb-link:hover {
   color: var(--color-white);
+  font-weight: 700;
+  text-shadow: 0 0 0.45px currentColor;
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .breadcrumb-sep {
