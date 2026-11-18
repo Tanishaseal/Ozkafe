@@ -475,7 +475,7 @@
 
 /* Packaging Presentation Pedestal with Sheen Light Sweep */
 .shelf-card-media {
-  height: 185px;
+  height: 230px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -877,7 +877,7 @@
     padding: 1rem;
   }
   .shelf-card-media {
-    height: 160px;
+    height: 195px;
     padding: 0;
   }
   .shelf-packet-img {
@@ -913,7 +913,7 @@
     max-width: 220px;
   }
   .shelf-card-media {
-    height: 145px;
+    height: 175px;
     padding: 0;
   }
   .shelf-packet-img {
