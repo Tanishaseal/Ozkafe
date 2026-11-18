@@ -73,10 +73,17 @@ export default function CategoryShelfRow({ category, coffees, selectedSizes, onS
             <article key={coffee.id} className="shelf-coffee-card">
               <div className="shelf-card-media">
                 <img 
-                  src="/images/coffee_packet.png" 
+                  src={coffee.image || "/images/coffee_packet.png"} 
                   alt={coffee.name} 
                   className="shelf-packet-img" 
                   loading="lazy" 
+                  onError={(e) => {
+                    if (coffee.image && coffee.image.endsWith('.webp')) {
+                      e.currentTarget.src = coffee.image.replace('.webp', '.png');
+                    } else if (e.currentTarget.src !== '/images/coffee_packet.png') {
+                      e.currentTarget.src = '/images/coffee_packet.png';
+                    }
+                  }}
                 />
               </div>
 

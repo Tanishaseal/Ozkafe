@@ -83,6 +83,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Cowboy blend",
     "categoryId": "commercial-blends",
     "category": "Commercial Blends",
+    "image": "/images/coffee_beans/cowboy-blend.webp",
     "prices": {
       "50g": 47,
       "250g": 226,
@@ -95,6 +96,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Bar Expresso",
     "categoryId": "commercial-blends",
     "category": "Commercial Blends",
+    "image": "/images/coffee_beans/bar-espresso.webp",
     "prices": {
       "50g": 50,
       "250g": 241,
@@ -107,6 +109,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Royal Carrebian Blend",
     "categoryId": "commercial-blends",
     "category": "Commercial Blends",
+    "image": "/images/coffee_beans/royal-caribbean-blend.webp",
     "prices": {
       "50g": 53,
       "250g": 256,
@@ -119,6 +122,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Classic House Blend",
     "categoryId": "commercial-blends",
     "category": "Commercial Blends",
+    "image": "/images/coffee_beans/classic-house-blend.webp",
     "prices": {
       "50g": 56,
       "250g": 266,
@@ -131,6 +135,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Australian Breakfast Blend",
     "categoryId": "commercial-blends",
     "category": "Commercial Blends",
+    "image": "/images/coffee_beans/australian-breakfast-blend.webp",
     "prices": {
       "50g": 60,
       "250g": 287,
@@ -143,6 +148,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Arabian Mocha Blend",
     "categoryId": "commercial-blends",
     "category": "Commercial Blends",
+    "image": "/images/coffee_beans/arabian-mocha-blend.webp",
     "prices": {
       "50g": 61,
       "250g": 290,
@@ -155,6 +161,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Classic Arabian Blend",
     "categoryId": "commercial-blends",
     "category": "Commercial Blends",
+    "image": "/images/coffee_beans/classic-arabian-blend.webp",
     "prices": {
       "50g": 63,
       "250g": 300,
@@ -229,6 +236,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Mysore Nuggets (MNEB)",
     "categoryId": "speciality-microlot",
     "category": "Speciality & Microlot Coffee",
+    "image": "/images/coffee_beans/mysore-nuggets.webp",
     "detail": "Grade MNEB",
     "prices": {
       "50g": 76,
@@ -242,6 +250,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Monsoon Malabar",
     "categoryId": "speciality-microlot",
     "category": "Speciality & Microlot Coffee",
+    "image": "/images/coffee_beans/monsoon-malabar.webp",
     "detail": "Monsooned Malabar",
     "prices": {
       "50g": 61,
@@ -267,6 +276,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Highland Blend",
     "categoryId": "speciality-microlot",
     "category": "Speciality & Microlot Coffee",
+    "image": "/images/coffee_beans/highland-blend.webp",
     "prices": {
       "50g": 93,
       "250g": 447,
@@ -329,6 +339,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Baarbara Natural",
     "categoryId": "baarbara-estate",
     "category": "Baarbara Estate",
+    "image": "/images/coffee_beans/baarbara-estate.webp",
     "detail": "Natural Process",
     "prices": {
       "50g": 111,
@@ -342,6 +353,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Baarbara Washed",
     "categoryId": "baarbara-estate",
     "category": "Baarbara Estate",
+    "image": "/images/coffee_beans/baarbara-estate.webp",
     "detail": "Washed Process",
     "prices": {
       "50g": 93,
@@ -355,6 +367,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Kalledevarapura Estate",
     "categoryId": "harley-estate",
     "category": "Harley Estate",
+    "image": "/images/coffee_beans/kalledevarapura-estate.webp",
     "prices": {
       "50g": 107,
       "250g": 514,
@@ -392,6 +405,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Barrel Aged RUM Coffee",
     "categoryId": "harley-estate",
     "category": "Harley Estate",
+    "image": "/images/coffee_beans/barrel-aged-rum.webp",
     "detail": "RUM Barrel Aged",
     "prices": {
       "50g": 190,
@@ -405,6 +419,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Barrel Aged Whisky Coffee",
     "categoryId": "harley-estate",
     "category": "Harley Estate",
+    "image": "/images/coffee_beans/barrel-aged-whisky.webp",
     "detail": "Whisky Barrel Aged",
     "prices": {
       "50g": 190,
@@ -455,6 +470,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Glenfell Estate Classic",
     "categoryId": "msp-cauvery-peak",
     "category": "MSP Cauvery Peak",
+    "image": "/images/coffee_beans/glenfell-estate-classic.webp",
     "prices": {
       "50g": 86,
       "250g": 411,
@@ -596,6 +612,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Freeze Dried Premium",
     "categoryId": "instant-coffee",
     "category": "Instant Coffee",
+    "image": "/images/coffee_beans/instant-freeze-dried.webp",
     "detail": "100% Coffee",
     "prices": {
       "50g": 155,
@@ -608,6 +625,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Freeze Dried Classic",
     "categoryId": "instant-coffee",
     "category": "Instant Coffee",
+    "image": "/images/coffee_beans/instant-freeze-dried.webp",
     "detail": "70% Coffee / 30% Chicory",
     "prices": {
       "50g": 143,
@@ -620,6 +638,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Spray Dried Premium",
     "categoryId": "instant-coffee",
     "category": "Instant Coffee",
+    "image": "/images/coffee_beans/instant-spray-dried.webp",
     "detail": "100% Coffee",
     "prices": {
       "50g": 103,
@@ -632,6 +651,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Spray Dried Classic",
     "categoryId": "instant-coffee",
     "category": "Instant Coffee",
+    "image": "/images/coffee_beans/instant-spray-dried.webp",
     "detail": "70% Coffee / 30% Chicory",
     "prices": {
       "50g": 85,
@@ -644,6 +664,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Spray Dried Strong",
     "categoryId": "instant-coffee",
     "category": "Instant Coffee",
+    "image": "/images/coffee_beans/instant-spray-dried.webp",
     "detail": "50% Coffee / 50% Chicory",
     "prices": {
       "50g": 71,
@@ -680,6 +701,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Agglomerated Classic",
     "categoryId": "instant-coffee",
     "category": "Instant Coffee",
+    "image": "/images/coffee_beans/instant-agglomerated-classic.webp",
     "detail": "70% Coffee / 30% Chicory",
     "prices": {
       "50g": 88,
@@ -692,6 +714,7 @@ export const COFFEE_BEANS_DATA = [
     "name": "Agglomerated Strong",
     "categoryId": "instant-coffee",
     "category": "Instant Coffee",
+    "image": "/images/coffee_beans/instant-agglomerated-strong.webp",
     "detail": "50% Coffee / 50% Chicory",
     "prices": {
       "50g": 77,

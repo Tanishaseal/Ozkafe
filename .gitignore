@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Raw Assets
+coffee beans/
+coffee beans.zip
+
