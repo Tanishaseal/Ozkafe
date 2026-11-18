@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   MapPin, Clock, ArrowRight, CheckCircle2, 
   UtensilsCrossed, Star,
-  Volume2, VolumeX, Play, Pause, Coffee
+  Volume2, VolumeX, Play, Pause, Coffee,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { CAFE_INFO, REVIEWS } from '../data/cafeData';
 import './Home.css';
@@ -11,6 +12,29 @@ export default function Home({ setCurrentPage }) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
+  const reviewsScrollRef = useRef(null);
+
+  const handleReviewScroll = (direction) => {
+    if (reviewsScrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = reviewsScrollRef.current;
+      const card = reviewsScrollRef.current.querySelector('.testimonial-card');
+      const step = card ? card.offsetWidth + 24 : 360;
+
+      if (direction === 'left') {
+        if (scrollLeft <= 10) {
+          reviewsScrollRef.current.scrollTo({ left: scrollWidth, behavior: 'smooth' });
+        } else {
+          reviewsScrollRef.current.scrollBy({ left: -step, behavior: 'smooth' });
+        }
+      } else {
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          reviewsScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          reviewsScrollRef.current.scrollBy({ left: step, behavior: 'smooth' });
+        }
+      }
+    }
+  };
 
   const navigateTo = (page) => {
     setCurrentPage(page);
@@ -351,23 +375,43 @@ export default function Home({ setCurrentPage }) {
             </p>
           </div>
 
-          <div className="testimonials-grid">
-            {REVIEWS.map(review => (
-              <div key={review.id} className="testimonial-card">
-                <div>
-                  <div className="testimonial-stars" aria-label={`${review.rating} out of 5 stars`}>
-                    {[...Array(review.rating)].map((_, i) => (
-                      <Star key={i} size={16} fill="currentColor" aria-hidden="true" />
-                    ))}
+          <div className="reviews-carousel-wrapper">
+            <button
+              type="button"
+              className="reviews-nav-arrow reviews-nav-left"
+              onClick={() => handleReviewScroll('left')}
+              aria-label="Scroll reviews to the left"
+            >
+              <ChevronLeft size={22} aria-hidden="true" />
+            </button>
+
+            <div className="testimonials-track" ref={reviewsScrollRef}>
+              {REVIEWS.map(review => (
+                <article key={review.id} className="testimonial-card">
+                  <div>
+                    <div className="testimonial-stars" aria-label={`${review.rating} out of 5 stars`}>
+                      {[...Array(review.rating)].map((_, i) => (
+                        <Star key={i} size={16} fill="currentColor" aria-hidden="true" />
+                      ))}
+                    </div>
+                    <p className="testimonial-quote">"{review.quote}"</p>
                   </div>
-                  <p className="testimonial-quote">"{review.quote}"</p>
-                </div>
-                <div>
-                  <div className="testimonial-author-name">{review.author}</div>
-                  <div className="testimonial-author-role">{review.role}</div>
-                </div>
-              </div>
-            ))}
+                  <div>
+                    <div className="testimonial-author-name">{review.author}</div>
+                    <div className="testimonial-author-role">{review.role}</div>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className="reviews-nav-arrow reviews-nav-right"
+              onClick={() => handleReviewScroll('right')}
+              aria-label="Scroll reviews to the right"
+            >
+              <ChevronRight size={22} aria-hidden="true" />
+            </button>
           </div>
         </div>
       </section>
