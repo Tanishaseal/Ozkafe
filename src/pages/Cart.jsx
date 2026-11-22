@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { 
   ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, 
-  ChevronLeft, ChevronRight, Phone, MessageSquare, Check, RotateCcw
+  ChevronLeft, ChevronRight, Phone, MessageSquare, Check, RotateCcw,
+  Maximize2, X
 } from 'lucide-react';
 import { GRIND_SIZE_OPTIONS, getProductBackImage } from '../data/coffeeBeansData';
 import { CAFE_INFO } from '../data/cafeData';
@@ -10,6 +11,7 @@ import './Cart.css';
 // Single Cart Item Component with dedicated Front / Back Slider & Options
 function CartItemCard({ item, onUpdate, onRemove }) {
   const [activeSlide, setActiveSlide] = useState(0); // 0: Front, 1: Back
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   if (!item || typeof item !== 'object') return null;
 
@@ -43,17 +45,35 @@ function CartItemCard({ item, onUpdate, onRemove }) {
     <article className="cart-item-card">
       {/* LEFT SIDE: Picture Slider (Front & Back) */}
       <div className="cart-item-slider-col">
-        <div className="cart-slider-frame">
+        <div className={`cart-slider-frame ${activeSlide === 0 ? 'view-front' : 'view-back'}`}>
           <div className="cart-slider-badge">
             <span className="cart-badge-indicator" />
             <span>{slides[activeSlide].label}</span>
           </div>
 
-          <div className="cart-slider-track">
+          {/* Expand to Full View Button */}
+          <button
+            type="button"
+            className="cart-slider-expand-btn"
+            onClick={() => setIsLightboxOpen(true)}
+            aria-label="Expand image to full size"
+            title="Click to view full size"
+          >
+            <Maximize2 size={16} aria-hidden="true" />
+          </button>
+
+          <div 
+            className="cart-slider-track" 
+            onClick={() => setIsLightboxOpen(true)}
+            title="Click image to enlarge"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter') setIsLightboxOpen(true); }}
+          >
             <img 
               src={slides[activeSlide].src}
               alt={slides[activeSlide].alt}
-              className="cart-slider-img"
+              className={`cart-slider-img ${activeSlide === 0 ? 'front-img' : 'back-img'}`}
               loading="lazy"
               onError={(e) => {
                 const currentSrc = e.currentTarget.getAttribute('src') || '';
@@ -74,7 +94,7 @@ function CartItemCard({ item, onUpdate, onRemove }) {
           <button 
             type="button" 
             className="cart-slider-arrow prev"
-            onClick={handlePrevSlide}
+            onClick={(e) => { e.stopPropagation(); handlePrevSlide(); }}
             aria-label={`View ${activeSlide === 0 ? 'Back' : 'Front'} side`}
           >
             <ChevronLeft size={18} aria-hidden="true" />
@@ -82,14 +102,14 @@ function CartItemCard({ item, onUpdate, onRemove }) {
           <button 
             type="button" 
             className="cart-slider-arrow next"
-            onClick={handleNextSlide}
+            onClick={(e) => { e.stopPropagation(); handleNextSlide(); }}
             aria-label={`View ${activeSlide === 1 ? 'Front' : 'Back'} side`}
           >
             <ChevronRight size={18} aria-hidden="true" />
           </button>
 
           {/* Quick Toggle Tabs */}
-          <div className="cart-slider-tabs" role="tablist" aria-label="Packaging views">
+          <div className="cart-slider-tabs" role="tablist" aria-label="Packaging views" onClick={(e) => e.stopPropagation()}>
             <button
               type="button"
               role="tab"
@@ -249,6 +269,60 @@ function CartItemCard({ item, onUpdate, onRemove }) {
           </div>
         </div>
       </div>
+
+      {/* Fullscreen High-Res Image Lightbox Modal */}
+      {isLightboxOpen && (
+        <div 
+          className="cart-lightbox-overlay" 
+          onClick={() => setIsLightboxOpen(false)}
+          role="dialog" 
+          aria-modal="true"
+          aria-label={`${item.name || 'Coffee'} ${slides[activeSlide].label}`}
+        >
+          <div className="cart-lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <button 
+              type="button" 
+              className="cart-lightbox-close"
+              onClick={() => setIsLightboxOpen(false)}
+              aria-label="Close full view"
+            >
+              <X size={22} aria-hidden="true" />
+            </button>
+
+            <div className="cart-lightbox-header">
+              <span className="cart-lightbox-title">{item.name}</span>
+              <span className="cart-lightbox-badge">{slides[activeSlide].label}</span>
+            </div>
+
+            <div className="cart-lightbox-img-wrap">
+              <img 
+                src={slides[activeSlide].src}
+                alt={slides[activeSlide].alt}
+                className="cart-lightbox-img"
+              />
+            </div>
+
+            <div className="cart-lightbox-controls">
+              <button 
+                type="button" 
+                className="btn btn-secondary btn-sm"
+                onClick={handlePrevSlide}
+              >
+                <ChevronLeft size={16} />
+                <span>{activeSlide === 0 ? 'View Back Label' : 'View Front Packaging'}</span>
+              </button>
+              <button 
+                type="button" 
+                className="btn btn-secondary btn-sm"
+                onClick={handleNextSlide}
+              >
+                <span>{activeSlide === 1 ? 'View Front Packaging' : 'View Back Label'}</span>
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </article>
   );
 }
