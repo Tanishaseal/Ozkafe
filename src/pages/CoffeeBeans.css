@@ -722,6 +722,14 @@
   transform: translateY(0);
 }
 
+.shelf-add-cart-btn.added {
+  background-color: #2F6132 !important;
+  border-color: #2F6132 !important;
+  color: #FFFFFF !important;
+  transform: scale(1.04);
+  box-shadow: 0 4px 12px rgba(47, 97, 50, 0.35);
+}
+
 /* ==========================================================================
    6. Empty Search State
    ========================================================================== */

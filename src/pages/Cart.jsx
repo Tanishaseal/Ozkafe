@@ -11,18 +11,24 @@ import './Cart.css';
 function CartItemCard({ item, onUpdate, onRemove }) {
   const [activeSlide, setActiveSlide] = useState(0); // 0: Front, 1: Back
 
+  if (!item || typeof item !== 'object') return null;
+
   const frontImg = item.image || '/images/coffee_packet.png';
   const backImg = item.backImage || getProductBackImage(item);
 
-  const sizeKeys = Object.keys(item.prices || {});
-  const currentSize = item.selectedSize || (sizeKeys.includes('250g') ? '250g' : sizeKeys[0]);
+  const prices = (item.prices && typeof item.prices === 'object') ? item.prices : {};
+  const sizeKeys = Object.keys(prices);
+  const currentSize = item.selectedSize || (sizeKeys.includes('250g') ? '250g' : sizeKeys[0] || 'Standard');
   const currentGrind = item.selectedGrind || 'Whole Beans';
-  const unitPrice = item.prices?.[currentSize] ?? Object.values(item.prices || {})[0] ?? 0;
-  const itemTotal = unitPrice * item.quantity;
+  const unitPrice = typeof prices[currentSize] === 'number' 
+    ? prices[currentSize] 
+    : (typeof Object.values(prices)[0] === 'number' ? Object.values(prices)[0] : 0);
+  const qty = typeof item.quantity === 'number' && item.quantity > 0 ? item.quantity : 1;
+  const itemTotal = unitPrice * qty;
 
   const slides = [
-    { label: 'Front Side', src: frontImg, alt: `${item.name} Front Packaging` },
-    { label: 'Back Side', src: backImg, alt: `${item.name} Official Back Label` }
+    { label: 'Front Side', src: frontImg, alt: `${item.name || 'Coffee'} Front Packaging` },
+    { label: 'Back Side', src: backImg, alt: `${item.name || 'Coffee'} Official Back Label` }
   ];
 
   const handlePrevSlide = () => {
@@ -154,7 +160,7 @@ function CartItemCard({ item, onUpdate, onRemove }) {
           <div className="cart-size-pills-row" role="radiogroup" aria-label={`Select grams for ${item.name}`}>
             {sizeKeys.map((size) => {
               const isSelected = currentSize === size;
-              const sizePrice = item.prices[size];
+              const sizePrice = prices[size] || 0;
               return (
                 <button
                   key={size}
@@ -247,7 +253,7 @@ function CartItemCard({ item, onUpdate, onRemove }) {
   );
 }
 
-export default function Cart({
+export function CartInner({
   cart = [],
   updateCartItem,
   removeFromCart,
@@ -259,14 +265,20 @@ export default function Cart({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const totalItemsCount = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
+  const safeCart = Array.isArray(cart) ? cart.filter(item => item && typeof item === 'object' && item.id) : [];
+
+  const totalItemsCount = safeCart.reduce((acc, item) => acc + (typeof item.quantity === 'number' && item.quantity > 0 ? item.quantity : 1), 0);
 
   // Subtotal calculation (Excl. 5% GST)
-  const subtotal = cart.reduce((acc, item) => {
-    const sizeKeys = Object.keys(item.prices || {});
-    const currentSize = item.selectedSize || (sizeKeys.includes('250g') ? '250g' : sizeKeys[0]);
-    const unitPrice = item.prices?.[currentSize] ?? Object.values(item.prices || {})[0] ?? 0;
-    return acc + unitPrice * (item.quantity || 1);
+  const subtotal = safeCart.reduce((acc, item) => {
+    const prices = (item.prices && typeof item.prices === 'object') ? item.prices : {};
+    const sizeKeys = Object.keys(prices);
+    const currentSize = item.selectedSize || (sizeKeys.includes('250g') ? '250g' : sizeKeys[0] || 'Standard');
+    const unitPrice = typeof prices[currentSize] === 'number' 
+      ? prices[currentSize] 
+      : (typeof Object.values(prices)[0] === 'number' ? Object.values(prices)[0] : 0);
+    const qty = typeof item.quantity === 'number' && item.quantity > 0 ? item.quantity : 1;
+    return acc + unitPrice * qty;
   }, 0);
 
   // 5% GST as per official Roastery catalog
@@ -280,17 +292,21 @@ export default function Cart({
       `---------------------------------`
     ];
 
-    cart.forEach((item, idx) => {
-      const sizeKeys = Object.keys(item.prices || {});
-      const currentSize = item.selectedSize || (sizeKeys.includes('250g') ? '250g' : sizeKeys[0]);
+    safeCart.forEach((item, idx) => {
+      const prices = (item.prices && typeof item.prices === 'object') ? item.prices : {};
+      const sizeKeys = Object.keys(prices);
+      const currentSize = item.selectedSize || (sizeKeys.includes('250g') ? '250g' : sizeKeys[0] || 'Standard');
       const currentGrind = item.selectedGrind || 'Whole Beans';
-      const unitPrice = item.prices?.[currentSize] ?? Object.values(item.prices || {})[0] ?? 0;
-      const total = unitPrice * item.quantity;
+      const unitPrice = typeof prices[currentSize] === 'number' 
+        ? prices[currentSize] 
+        : (typeof Object.values(prices)[0] === 'number' ? Object.values(prices)[0] : 0);
+      const qty = typeof item.quantity === 'number' && item.quantity > 0 ? item.quantity : 1;
+      const total = unitPrice * qty;
 
-      lines.push(`${idx + 1}. *${item.name}*`);
+      lines.push(`${idx + 1}. *${item.name || 'Coffee'}*`);
       lines.push(`   • Grams/Size: ${currentSize}`);
       lines.push(`   • Grind: ${currentGrind}`);
-      lines.push(`   • Quantity: ${item.quantity}`);
+      lines.push(`   • Quantity: ${qty}`);
       lines.push(`   • Price: ₹${total} (₹${unitPrice} each)`);
     });
 
@@ -365,7 +381,7 @@ export default function Cart({
       {/* Main Cart Body */}
       <main className="cart-main-section">
         <div className="container">
-          {cart.length === 0 ? (
+          {safeCart.length === 0 ? (
             /* Empty Cart State */
             <div className="cart-empty-state">
               <div className="cart-empty-icon-wrap">
@@ -415,7 +431,7 @@ export default function Cart({
                 </div>
 
                 <div className="cart-items-list">
-                  {cart.map((item) => (
+                  {safeCart.map((item) => (
                     <CartItemCard
                       key={item.id}
                       item={item}
@@ -508,3 +524,48 @@ export default function Cart({
     </div>
   );
 }
+
+class CartErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('CartErrorBoundary caught error:', error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="cart-page" style={{ padding: '4rem 1rem', textAlign: 'center' }}>
+          <div className="cart-empty-state">
+            <h2>Shopping Cart</h2>
+            <p>Your cart session has been safely refreshed.</p>
+            <button 
+              type="button" 
+              className="btn btn-primary"
+              onClick={() => {
+                try { localStorage.removeItem('ozkafe_cart'); } catch {}
+                window.location.reload();
+              }}
+            >
+              Reload Cart
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export default function Cart(props) {
+  return (
+    <CartErrorBoundary>
+      <CartInner {...props} />
+    </CartErrorBoundary>
+  );
+}
+

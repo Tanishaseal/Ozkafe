@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Check, ArrowRight } from 'lucide-react';
 import './App.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -11,6 +12,7 @@ import CoffeeBeans from './pages/CoffeeBeans';
 import Cart from './pages/Cart';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
+import FlyToCartAnimation from './components/FlyToCartAnimation';
 import { getProductBackImage } from './data/coffeeBeansData';
 
 const PAGE_TITLES = {
@@ -96,6 +98,9 @@ export default function App() {
       return [];
     }
   });
+  const [flyingItems, setFlyingItems] = useState([]);
+  const [isCartBumping, setIsCartBumping] = useState(false);
+  const [cartToast, setCartToast] = useState(null);
 
   // Persist cart to localStorage
   useEffect(() => {
@@ -195,9 +200,9 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleAddToCart = (coffee, customSize = null, customGrind = null) => {
+  const handleAddToCart = (coffee, event = null) => {
     const sizeKeys = Object.keys(coffee.prices || {});
-    const defaultSize = customSize || (
+    const defaultSize = (
       sizeKeys.includes('250g') 
         ? '250g' 
         : sizeKeys.includes('100g') 
@@ -206,7 +211,7 @@ export default function App() {
             ? '500 ml' 
             : sizeKeys[0] || 'Standard'
     );
-    const defaultGrind = customGrind || 'Whole Beans';
+    const defaultGrind = 'Whole Beans';
 
     setCart((prevCart) => {
       const existingIndex = prevCart.findIndex(
@@ -217,7 +222,7 @@ export default function App() {
         const updated = [...prevCart];
         updated[existingIndex] = {
           ...updated[existingIndex],
-          quantity: updated[existingIndex].quantity + 1
+          quantity: (updated[existingIndex].quantity || 1) + 1
         };
         return updated;
       }
@@ -240,8 +245,55 @@ export default function App() {
       return [...prevCart, newItem];
     });
 
-    // Directly navigate to the cart page on adding each item
-    handlePageChange('cart');
+    // 1. Calculate flying start and end coordinates
+    let startX = window.innerWidth / 2;
+    let startY = window.innerHeight / 2;
+    if (event && event.currentTarget) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      startX = rect.left + rect.width / 2;
+      startY = rect.top + rect.height / 2;
+    }
+
+    const cartBtn = document.querySelector('.nav-cart-btn');
+    let targetX = window.innerWidth - 60;
+    let targetY = 35;
+    if (cartBtn) {
+      const rect = cartBtn.getBoundingClientRect();
+      targetX = rect.left + rect.width / 2;
+      targetY = rect.top + rect.height / 2;
+    }
+
+    const flyId = `fly-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    setFlyingItems((prev) => [
+      ...prev,
+      {
+        id: flyId,
+        startX,
+        startY,
+        targetX,
+        targetY,
+        image: coffee.image || '/images/coffee_packet.png',
+        name: coffee.name
+      }
+    ]);
+
+    // 2. When the flying order reaches the cart icon, trigger cart bump & badge pulse
+    setTimeout(() => {
+      setFlyingItems((prev) => prev.filter((f) => f.id !== flyId));
+      setIsCartBumping(true);
+      setTimeout(() => setIsCartBumping(false), 550);
+    }, 700);
+
+    // 3. Show non-intrusive toast with "View Cart" CTA
+    setCartToast({
+      name: coffee.name,
+      id: Date.now()
+    });
+    setTimeout(() => {
+      setCartToast((prev) => (prev && prev.name === coffee.name ? null : prev));
+    }, 3500);
+
+    // NOTE: Does NOT open the cart directly. User stays on current page until Cart icon is clicked!
   };
 
   const handleUpdateCartItem = (itemId, updates) => {
@@ -267,7 +319,11 @@ export default function App() {
         currentPage={currentPage} 
         setCurrentPage={handlePageChange}
         totalCartItems={totalCartItems}
+        isCartBumping={isCartBumping}
       />
+
+      {/* Fly-to-Cart Animation Portal */}
+      <FlyToCartAnimation items={flyingItems} />
 
       {/* Main Pages */}
       <main id="main-content">
@@ -325,6 +381,30 @@ export default function App() {
           />
         )}
       </main>
+
+      {/* Added to Cart Floating Toast */}
+      {cartToast && (
+        <div className="cart-toast-notification" role="status" aria-live="polite">
+          <div className="cart-toast-content">
+            <Check size={18} className="cart-toast-check" aria-hidden="true" />
+            <div className="cart-toast-text">
+              <strong>Added to Cart!</strong>
+              <span>{cartToast.name}</span>
+            </div>
+          </div>
+          <button 
+            type="button" 
+            className="cart-toast-view-btn"
+            onClick={() => {
+              setCartToast(null);
+              handlePageChange('cart');
+            }}
+          >
+            <span>View Cart</span>
+            <ArrowRight size={14} aria-hidden="true" />
+          </button>
+        </div>
+      )}
 
       {/* Footer */}
       <Footer 

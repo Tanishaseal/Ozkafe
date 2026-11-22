@@ -1,13 +1,25 @@
-import React, { useRef } from 'react';
-import { ChevronLeft, ChevronRight, Tag, ShoppingCart } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight, Tag, ShoppingCart, Check } from 'lucide-react';
 
 export default function CategoryShelfRow({ category, coffees, onAddToCart }) {
   const scrollRef = useRef(null);
+  const [recentlyAdded, setRecentlyAdded] = useState({});
 
   const handleScroll = (direction) => {
     if (scrollRef.current) {
       const scrollAmount = direction === 'left' ? -320 : 320;
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  const handleAddToCartClick = (coffee, e) => {
+    setRecentlyAdded((prev) => ({ ...prev, [coffee.id]: true }));
+    setTimeout(() => {
+      setRecentlyAdded((prev) => ({ ...prev, [coffee.id]: false }));
+    }, 1400);
+
+    if (onAddToCart) {
+      onAddToCart(coffee, e);
     }
   };
 
@@ -98,12 +110,21 @@ export default function CategoryShelfRow({ category, coffees, onAddToCart }) {
                   </div>
                   <button
                     type="button"
-                    className="shelf-add-cart-btn"
-                    onClick={() => onAddToCart && onAddToCart(coffee)}
+                    className={`shelf-add-cart-btn ${recentlyAdded[coffee.id] ? 'added' : ''}`}
+                    onClick={(e) => handleAddToCartClick(coffee, e)}
                     aria-label={`Add ${coffee.name} to cart`}
                   >
-                    <ShoppingCart size={15} aria-hidden="true" />
-                    <span>Add to Cart</span>
+                    {recentlyAdded[coffee.id] ? (
+                      <>
+                        <Check size={15} aria-hidden="true" />
+                        <span>Added! ✓</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingCart size={15} aria-hidden="true" />
+                        <span>Add to Cart</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

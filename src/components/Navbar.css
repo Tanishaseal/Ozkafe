@@ -257,6 +257,27 @@
   border-color: var(--color-caramel-400);
 }
 
+.nav-cart-btn.cart-bumping {
+  animation: navCartBump 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.nav-cart-btn.cart-bumping .nav-cart-badge {
+  animation: navCartBadgePulse 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes navCartBump {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.22); background-color: var(--color-warm-amber); color: #1B0C04; }
+  65% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes navCartBadgePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.45); background-color: #FFFFFF; color: #1B0C04; }
+  100% { transform: scale(1); }
+}
+
 .nav-cart-badge {
   display: inline-flex;
   align-items: center;

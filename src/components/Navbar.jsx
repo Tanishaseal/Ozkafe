@@ -3,7 +3,7 @@ import { Menu, X, Clock, MapPin, Phone, ShoppingCart } from 'lucide-react';
 import { CAFE_INFO } from '../data/cafeData';
 import './Navbar.css';
 
-export default function Navbar({ currentPage, setCurrentPage, totalCartItems = 0 }) {
+export default function Navbar({ currentPage, setCurrentPage, totalCartItems = 0, isCartBumping = false }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -146,7 +146,7 @@ export default function Navbar({ currentPage, setCurrentPage, totalCartItems = 0
           <div className="nav-actions">
             <button 
               type="button"
-              className={`btn btn-primary btn-sm nav-cart-btn ${currentPage === 'cart' ? 'active' : ''}`}
+              className={`btn btn-primary btn-sm nav-cart-btn ${isCartBumping ? 'cart-bumping' : ''} ${currentPage === 'cart' ? 'active' : ''}`}
               onClick={() => handleNavClick('cart')}
               aria-label={`Shopping cart with ${totalCartItems} items`}
             >
