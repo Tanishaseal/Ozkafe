@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, 
   ChevronLeft, ChevronRight, Phone, MessageSquare, Check, RotateCcw,
-  Maximize2, X
+  ZoomIn, ZoomOut
 } from 'lucide-react';
 import { GRIND_SIZE_OPTIONS, getProductBackImage } from '../data/coffeeBeansData';
 import { CAFE_INFO } from '../data/cafeData';
@@ -11,7 +11,8 @@ import './Cart.css';
 // Single Cart Item Component with dedicated Front / Back Slider & Options
 function CartItemCard({ item, onUpdate, onRemove }) {
   const [activeSlide, setActiveSlide] = useState(0); // 0: Front, 1: Back
-  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
 
   if (!item || typeof item !== 'object') return null;
 
@@ -34,46 +35,102 @@ function CartItemCard({ item, onUpdate, onRemove }) {
   ];
 
   const handlePrevSlide = () => {
+    setIsZoomed(false);
     setActiveSlide((prev) => (prev === 0 ? 1 : 0));
   };
 
   const handleNextSlide = () => {
+    setIsZoomed(false);
     setActiveSlide((prev) => (prev === 1 ? 0 : 1));
+  };
+
+  // In-place interactive hover zoom tracking
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomOrigin({
+      x: Math.max(0, Math.min(100, Math.round(x * 10) / 10)),
+      y: Math.max(0, Math.min(100, Math.round(y * 10) / 10))
+    });
+  };
+
+  const handleMouseEnter = (e) => {
+    setIsZoomed(true);
+    handleMouseMove(e);
+  };
+
+  const handleMouseLeave = () => {
+    setIsZoomed(false);
+    setZoomOrigin({ x: 50, y: 50 });
+  };
+
+  const handleToggleZoom = (e) => {
+    e.stopPropagation();
+    setIsZoomed((prev) => !prev);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isZoomed || !e.touches || e.touches.length === 0) return;
+    const touch = e.touches[0];
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const x = ((touch.clientX - rect.left) / rect.width) * 100;
+    const y = ((touch.clientY - rect.top) / rect.height) * 100;
+    setZoomOrigin({
+      x: Math.max(0, Math.min(100, Math.round(x * 10) / 10)),
+      y: Math.max(0, Math.min(100, Math.round(y * 10) / 10))
+    });
   };
 
   return (
     <article className="cart-item-card">
-      {/* LEFT SIDE: Picture Slider (Front & Back) */}
+      {/* LEFT SIDE: Picture Slider (Front & Back) with In-Place Hover Zoom */}
       <div className="cart-item-slider-col">
-        <div className={`cart-slider-frame ${activeSlide === 0 ? 'view-front' : 'view-back'}`}>
+        <div 
+          className={`cart-slider-frame ${activeSlide === 0 ? 'view-front' : 'view-back'} ${isZoomed ? 'is-zoomed' : ''}`}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onMouseMove={handleMouseMove}
+          onTouchMove={handleTouchMove}
+          onClick={handleToggleZoom}
+        >
           <div className="cart-slider-badge">
             <span className="cart-badge-indicator" />
             <span>{slides[activeSlide].label}</span>
           </div>
 
-          {/* Expand to Full View Button */}
+          {/* Zoom Button / Indicator: appears automatically on hover or zoom */}
           <button
             type="button"
-            className="cart-slider-expand-btn"
-            onClick={() => setIsLightboxOpen(true)}
-            aria-label="Expand image to full size"
-            title="Click to view full size"
+            className={`cart-slider-zoom-btn ${isZoomed ? 'zoomed' : ''}`}
+            onClick={handleToggleZoom}
+            aria-label={isZoomed ? "Reset zoom" : "Zoom in image"}
+            title={isZoomed ? "Click to reset zoom" : "Hover or click to zoom in"}
           >
-            <Maximize2 size={16} aria-hidden="true" />
+            {isZoomed ? (
+              <>
+                <ZoomOut size={14} aria-hidden="true" />
+                <span className="zoom-btn-text">2.4× Zoomed</span>
+              </>
+            ) : (
+              <>
+                <ZoomIn size={14} aria-hidden="true" />
+                <span className="zoom-btn-text">Hover to Zoom</span>
+              </>
+            )}
           </button>
 
-          <div 
-            className="cart-slider-track" 
-            onClick={() => setIsLightboxOpen(true)}
-            title="Click image to enlarge"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter') setIsLightboxOpen(true); }}
-          >
+          <div className="cart-slider-track">
             <img 
               src={slides[activeSlide].src}
               alt={slides[activeSlide].alt}
               className={`cart-slider-img ${activeSlide === 0 ? 'front-img' : 'back-img'}`}
+              style={{
+                transformOrigin: isZoomed ? `${zoomOrigin.x}% ${zoomOrigin.y}%` : '50% 50%',
+                transform: isZoomed ? 'scale(2.4)' : 'scale(1)'
+              }}
               loading="lazy"
               onError={(e) => {
                 const currentSrc = e.currentTarget.getAttribute('src') || '';
@@ -115,7 +172,7 @@ function CartItemCard({ item, onUpdate, onRemove }) {
               role="tab"
               aria-selected={activeSlide === 0}
               className={`cart-slider-tab ${activeSlide === 0 ? 'active' : ''}`}
-              onClick={() => setActiveSlide(0)}
+              onClick={() => { setIsZoomed(false); setActiveSlide(0); }}
             >
               Front
             </button>
@@ -124,7 +181,7 @@ function CartItemCard({ item, onUpdate, onRemove }) {
               role="tab"
               aria-selected={activeSlide === 1}
               className={`cart-slider-tab ${activeSlide === 1 ? 'active' : ''}`}
-              onClick={() => setActiveSlide(1)}
+              onClick={() => { setIsZoomed(false); setActiveSlide(1); }}
             >
               Back
             </button>
@@ -136,13 +193,13 @@ function CartItemCard({ item, onUpdate, onRemove }) {
           <button
             type="button"
             className={`cart-slider-dot ${activeSlide === 0 ? 'active' : ''}`}
-            onClick={() => setActiveSlide(0)}
+            onClick={() => { setIsZoomed(false); setActiveSlide(0); }}
             aria-label="Slide 1: Front side"
           />
           <button
             type="button"
             className={`cart-slider-dot ${activeSlide === 1 ? 'active' : ''}`}
-            onClick={() => setActiveSlide(1)}
+            onClick={() => { setIsZoomed(false); setActiveSlide(1); }}
             aria-label="Slide 2: Back side"
           />
         </div>
@@ -269,60 +326,6 @@ function CartItemCard({ item, onUpdate, onRemove }) {
           </div>
         </div>
       </div>
-
-      {/* Fullscreen High-Res Image Lightbox Modal */}
-      {isLightboxOpen && (
-        <div 
-          className="cart-lightbox-overlay" 
-          onClick={() => setIsLightboxOpen(false)}
-          role="dialog" 
-          aria-modal="true"
-          aria-label={`${item.name || 'Coffee'} ${slides[activeSlide].label}`}
-        >
-          <div className="cart-lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <button 
-              type="button" 
-              className="cart-lightbox-close"
-              onClick={() => setIsLightboxOpen(false)}
-              aria-label="Close full view"
-            >
-              <X size={22} aria-hidden="true" />
-            </button>
-
-            <div className="cart-lightbox-header">
-              <span className="cart-lightbox-title">{item.name}</span>
-              <span className="cart-lightbox-badge">{slides[activeSlide].label}</span>
-            </div>
-
-            <div className="cart-lightbox-img-wrap">
-              <img 
-                src={slides[activeSlide].src}
-                alt={slides[activeSlide].alt}
-                className="cart-lightbox-img"
-              />
-            </div>
-
-            <div className="cart-lightbox-controls">
-              <button 
-                type="button" 
-                className="btn btn-secondary btn-sm"
-                onClick={handlePrevSlide}
-              >
-                <ChevronLeft size={16} />
-                <span>{activeSlide === 0 ? 'View Back Label' : 'View Front Packaging'}</span>
-              </button>
-              <button 
-                type="button" 
-                className="btn btn-secondary btn-sm"
-                onClick={handleNextSlide}
-              >
-                <span>{activeSlide === 1 ? 'View Front Packaging' : 'View Back Label'}</span>
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </article>
   );
 }
