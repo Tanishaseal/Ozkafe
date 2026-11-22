@@ -24,7 +24,7 @@
         try {
           var p = (window.location.pathname || '').toLowerCase();
           var h = (window.location.hash || '').toLowerCase();
-          var bg = '/images/headers/header_bg_faq.webp';
+          var bg = '/images/hero_coffee.webp';
           if (p.indexOf('about') !== -1 || h.indexOf('about') !== -1) {
             bg = '/images/headers/header_bg_about.webp';
           } else if (p.indexOf('contact') !== -1 || h.indexOf('contact') !== -1) {
@@ -36,6 +36,8 @@
           } else if (p.indexOf('commercial') !== -1 || h.indexOf('commercial') !== -1) {
             bg = '/images/headers/header_bg_about.webp';
           } else if (p.indexOf('instant') !== -1 || h.indexOf('instant') !== -1) {
+            bg = '/images/headers/header_bg_faq.webp';
+          } else if (p.indexOf('faq') !== -1 || h.indexOf('faq') !== -1) {
             bg = '/images/headers/header_bg_faq.webp';
           } else if (p === '/' || p === '' || p.indexOf('home') !== -1) {
             bg = '/images/hero_coffee.webp';

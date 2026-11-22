@@ -8,8 +8,10 @@ import Commercial from './pages/Commercial';
 import SingleOrigin from './pages/SingleOrigin';
 import InstantCoffee from './pages/InstantCoffee';
 import CoffeeBeans from './pages/CoffeeBeans';
+import Cart from './pages/Cart';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
+import { getProductBackImage } from './data/coffeeBeansData';
 
 const PAGE_TITLES = {
   home: 'Ozkafe | Specialty Coffee Roastery & Cafe Experience Center | Kolkata',
@@ -18,6 +20,7 @@ const PAGE_TITLES = {
   'single-origin': 'Single Origin Estate Coffees | Ozkafe Kolkata',
   'instant-coffee': 'Instant Coffee & Cold Brew | Ozkafe Kolkata',
   'coffee-beans': 'Coffee Beans & Roastery Shelf | Ozkafe Kolkata',
+  cart: 'Shopping Cart | Ozkafe Specialty Coffee Roastery | Kolkata',
   contact: 'Contact & Directions | Ozkafe Ballygunge | Kolkata',
   faq: 'Frequently Asked Questions | Ozkafe Specialty Coffee & Cafe'
 };
@@ -28,6 +31,7 @@ const PAGE_ROUTES = {
   commercial: '/commercial',
   'single-origin': '/single-origin',
   'instant-coffee': '/instant-coffee',
+  cart: '/cart',
   contact: '/contactus',
   faq: '/faq',
   'coffee-beans': '/coffee-beans'
@@ -63,6 +67,9 @@ const getPageFromLocation = () => {
   if (pathname === '/coffee-beans' || pathname === '/beans') {
     return 'coffee-beans';
   }
+  if (pathname === '/cart' || pathname === '/shopping-cart') {
+    return 'cart';
+  }
 
   // 2. Check hash (backward compatibility / legacy #home, #about etc.)
   const hash = window.location.hash.replace('#', '').toLowerCase();
@@ -74,12 +81,30 @@ const getPageFromLocation = () => {
   if (hash === 'contact' || hash === 'contactus' || hash === 'contact-us') return 'contact';
   if (hash === 'faq') return 'faq';
   if (hash === 'coffee-beans') return 'coffee-beans';
+  if (hash === 'cart') return 'cart';
 
   return 'home';
 };
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(getPageFromLocation);
+  const [cart, setCart] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ozkafe_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Persist cart to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('ozkafe_cart', JSON.stringify(cart));
+    } catch (err) {
+      console.error('Failed to save cart to localStorage', err);
+    }
+  }, [cart]);
 
   // Always on initial load and refresh: display loader with logo, then smoothly fade out
   useEffect(() => {
@@ -170,12 +195,78 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleAddToCart = (coffee, customSize = null, customGrind = null) => {
+    const sizeKeys = Object.keys(coffee.prices || {});
+    const defaultSize = customSize || (
+      sizeKeys.includes('250g') 
+        ? '250g' 
+        : sizeKeys.includes('100g') 
+          ? '100g' 
+          : sizeKeys.includes('500 ml') 
+            ? '500 ml' 
+            : sizeKeys[0] || 'Standard'
+    );
+    const defaultGrind = customGrind || 'Whole Beans';
+
+    setCart((prevCart) => {
+      const existingIndex = prevCart.findIndex(
+        (item) => item.coffeeId === coffee.id && item.selectedSize === defaultSize && item.selectedGrind === defaultGrind
+      );
+
+      if (existingIndex > -1) {
+        const updated = [...prevCart];
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          quantity: updated[existingIndex].quantity + 1
+        };
+        return updated;
+      }
+
+      const newItem = {
+        id: `${coffee.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        coffeeId: coffee.id,
+        name: coffee.name,
+        category: coffee.category,
+        categoryId: coffee.categoryId,
+        detail: coffee.detail || '',
+        image: coffee.image,
+        backImage: coffee.backImage || getProductBackImage(coffee),
+        prices: coffee.prices,
+        selectedSize: defaultSize,
+        selectedGrind: defaultGrind,
+        quantity: 1
+      };
+
+      return [...prevCart, newItem];
+    });
+
+    // Directly navigate to the cart page on adding each item
+    handlePageChange('cart');
+  };
+
+  const handleUpdateCartItem = (itemId, updates) => {
+    setCart((prevCart) =>
+      prevCart.map((item) => (item.id === itemId ? { ...item, ...updates } : item))
+    );
+  };
+
+  const handleRemoveFromCart = (itemId) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
+  };
+
+  const handleClearCart = () => {
+    setCart([]);
+  };
+
+  const totalCartItems = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
+
   return (
     <div className="app-layout">
       {/* Navbar with brand and navigation links */}
       <Navbar 
         currentPage={currentPage} 
         setCurrentPage={handlePageChange}
+        totalCartItems={totalCartItems}
       />
 
       {/* Main Pages */}
@@ -193,26 +284,39 @@ export default function App() {
         {currentPage === 'commercial' && (
           <Commercial 
             setCurrentPage={handlePageChange}
+            onAddToCart={handleAddToCart}
           />
         )}
         {currentPage === 'single-origin' && (
           <SingleOrigin 
             setCurrentPage={handlePageChange}
+            onAddToCart={handleAddToCart}
           />
         )}
         {currentPage === 'instant-coffee' && (
           <InstantCoffee 
             setCurrentPage={handlePageChange}
+            onAddToCart={handleAddToCart}
           />
         )}
         {currentPage === 'coffee-beans' && (
           <CoffeeBeans 
             setCurrentPage={handlePageChange}
+            onAddToCart={handleAddToCart}
+          />
+        )}
+        {currentPage === 'cart' && (
+          <Cart 
+            cart={cart}
+            updateCartItem={handleUpdateCartItem}
+            removeFromCart={handleRemoveFromCart}
+            clearCart={handleClearCart}
+            setCurrentPage={handlePageChange}
           />
         )}
         {currentPage === 'contact' && (
           <Contact 
-            setCurrentPage={handlePageChange}
+            setCurrentPage={handlePageChange} 
           />
         )}
         {currentPage === 'faq' && (

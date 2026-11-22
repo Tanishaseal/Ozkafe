@@ -80,7 +80,7 @@ export const COFFEE_CATEGORIES = [
 export const COFFEE_BEANS_DATA = [
   {
     "id": "cb-1",
-    "name": "Cowboy blend",
+    "name": "Cowboy Blend",
     "categoryId": "commercial-blends",
     "category": "Commercial Blends",
     "image": "/images/coffee_beans/Cowboy Blend.webp",
@@ -803,7 +803,7 @@ export const COFFEE_BEANS_DATA = [
   },
   {
     "id": "cb-55",
-    "name": "Cinamon",
+    "name": "Cinnamon",
     "categoryId": "flavoured-instant",
     "category": "Flavoured Instant Coffee",
     "detail": "Freeze Dried Premium Base",
@@ -855,7 +855,7 @@ export const COFFEE_BEANS_DATA = [
   },
   {
     "id": "cb-59",
-    "name": "Commercial blends Arabica 80%",
+    "name": "Commercial Blend - Arabica 80%",
     "categoryId": "cold-brew",
     "category": "Liquid Cold Brew Concentrate",
     "detail": "RTD: 3x Concentrate",
@@ -924,4 +924,26 @@ export const INSTANT_COFFEE_CATEGORIES = COFFEE_CATEGORIES.filter(cat =>
 export const INSTANT_COFFEES = COFFEE_BEANS_DATA.filter(coffee => 
   ['instant-coffee', 'flavoured-instant', 'cold-brew'].includes(coffee.categoryId)
 );
+
+// Grind Size options explicitly requested
+export const GRIND_SIZE_OPTIONS = [
+  'Whole Beans',
+  'French Press',
+  'Moka Pot',
+  'Pour-Over',
+  'Cold Brew',
+  'Aeropress'
+];
+
+// Helper to resolve packaging back label from official designs
+export function getProductBackImage(coffee) {
+  if (!coffee) return '/images/packaging_back/3.png';
+  if (coffee.backImage) return coffee.backImage;
+  const cat = coffee.categoryId || '';
+  if (cat === 'flavoured-instant') return '/images/packaging_back/1.png';
+  if (cat === 'instant-coffee') return '/images/packaging_back/2.png';
+  if (cat === 'south-indian-filter') return '/images/packaging_back/4.png';
+  return '/images/packaging_back/3.png';
+}
+
 

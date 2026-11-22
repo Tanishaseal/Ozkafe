@@ -261,6 +261,15 @@
   color: #DEB58A;
 }
 
+.quicknav-pill-btn.disabled,
+.quicknav-pill-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  background: #ECE8E1;
+  border-color: #D6CEC3;
+}
+
 /* ==========================================================================
    4. 12 Category Shelf Rows (Horizontal Scrolling Shelf to the Left)
    ========================================================================== */
@@ -278,6 +287,7 @@
   padding: 1.85rem 1.85rem 1.6rem;
   box-shadow: 0 6px 20px rgba(41, 20, 8, 0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  scroll-margin-top: calc(var(--header-height) + var(--topbar-height) + 1.25rem);
 }
 
 .category-shelf-section:hover {
@@ -626,28 +636,38 @@
   transform: translateY(-1px);
 }
 
-/* Price Section - Formatted with Excl. 5% GST */
+/* Price Section - Formatted with Excl. 5% GST & Add to Cart button */
 .shelf-card-price-row {
-  padding-top: 0.75rem;
+  padding-top: 0.85rem;
   border-top: 1px dashed #D6CEC3;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .shelf-price-wrap {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+}
+
+.shelf-price-from {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .shelf-price-val {
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: #1B0C04;
   font-family: var(--font-display);
   letter-spacing: -0.02em;
+  line-height: 1.1;
   transition: color 0.2s ease;
 }
 
@@ -656,21 +676,50 @@
 }
 
 .shelf-price-tag {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: #693719;
   background: rgba(110, 56, 25, 0.09);
   border: 1px solid rgba(110, 56, 25, 0.25);
-  padding: 0.22rem 0.55rem;
+  padding: 0.15rem 0.45rem;
   border-radius: var(--radius-sm);
   transition: all 0.25s ease;
+  white-space: nowrap;
 }
 
 .shelf-coffee-card:hover .shelf-price-tag {
   background: rgba(186, 115, 61, 0.16);
   border-color: #BA733D;
   color: #4E2812;
-  box-shadow: 0 2px 8px rgba(186, 115, 61, 0.2);
+}
+
+.shelf-add-cart-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: var(--color-espresso-900);
+  color: #FFFFFF;
+  border: 1.5px solid var(--color-espresso-900);
+  padding: 0.48rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(27, 12, 4, 0.15);
+}
+
+.shelf-add-cart-btn:hover {
+  background-color: var(--color-roast-500);
+  border-color: var(--color-roast-500);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(41, 20, 8, 0.25);
+}
+
+.shelf-add-cart-btn:active {
+  transform: translateY(0);
 }
 
 /* ==========================================================================
@@ -822,6 +871,32 @@
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.beans-contact-banner .btn-primary {
+  background-color: var(--color-warm-amber, #BA733D);
+  border-color: var(--color-warm-amber, #BA733D);
+  color: #ffffff;
+}
+
+.beans-contact-banner .btn-primary:hover {
+  background-color: var(--color-caramel-400, #8E4E25);
+  border-color: var(--color-caramel-400, #8E4E25);
+  color: #ffffff;
+}
+
+.beans-contact-banner .btn-outline,
+.beans-contact-banner .btn-outline-white {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+}
+
+.beans-contact-banner .btn-outline:hover,
+.beans-contact-banner .btn-outline-white:hover {
+  background-color: #ffffff;
+  color: var(--color-espresso-900, #1B0C04);
+  border-color: #ffffff;
 }
 
 .beans-banner-watermark {

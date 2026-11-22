@@ -38,9 +38,10 @@ export default function Footer({ setCurrentPage }) {
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
               <img 
-                src="/ozkafe-logo.png" 
+                src="/ozkafe-logo.webp" 
                 alt="Ozkafe Emblem Logo" 
                 className="footer-logo-img" 
+                onError={(e) => { e.currentTarget.src = '/ozkafe-logo.png'; }}
               />
               <div>
                 <div className="footer-brand-title">OZKAFE</div>
@@ -76,6 +77,12 @@ export default function Footer({ setCurrentPage }) {
               </a>
               <a href="/faq" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('faq'); }}>
                 FAQ
+              </a>
+              <a href="/coffee-beans" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('coffee-beans'); }}>
+                All Coffee Beans
+              </a>
+              <a href="/cart" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('cart'); }}>
+                Shopping Cart
               </a>
             </div>
           </div>

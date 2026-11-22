@@ -793,16 +793,16 @@
 
 @media (max-width: 480px) {
   .reviews-carousel-wrapper {
-    gap: 0.35rem;
+    gap: 0.4rem;
   }
   .reviews-nav-arrow {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
   }
   .testimonial-card {
-    flex: 0 0 80vw;
-    width: 80vw;
-    max-width: 80vw;
+    flex: 0 0 min(290px, 72vw);
+    width: min(290px, 72vw);
+    max-width: min(290px, 72vw);
     padding: 1.4rem 1.15rem;
   }
   .testimonial-quote {
@@ -810,9 +810,31 @@
   }
 }
 
+@media (max-width: 360px) {
+  .reviews-carousel-wrapper {
+    gap: 0.25rem;
+  }
+  .reviews-nav-arrow {
+    width: 32px;
+    height: 32px;
+  }
+  .testimonial-card {
+    flex: 0 0 min(250px, 68vw);
+    width: min(250px, 68vw);
+    max-width: min(250px, 68vw);
+    padding: 1.25rem 1rem;
+  }
+  .testimonial-quote {
+    font-size: 0.85rem;
+  }
+}
+
 @media (max-width: 680px) {
   .hero-video-section {
     min-height: 85vh;
+  }
+  .hero-video-center-container {
+    padding: 4rem 1.25rem 6.5rem;
   }
   .hero-brand-title {
     letter-spacing: 0.12em;

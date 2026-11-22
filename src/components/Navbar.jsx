@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Clock, MapPin, Phone } from 'lucide-react';
+import { Menu, X, Clock, MapPin, Phone, ShoppingCart } from 'lucide-react';
 import { CAFE_INFO } from '../data/cafeData';
 import './Navbar.css';
 
-export default function Navbar({ currentPage, setCurrentPage }) {
+export default function Navbar({ currentPage, setCurrentPage, totalCartItems = 0 }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -24,6 +24,18 @@ export default function Navbar({ currentPage, setCurrentPage }) {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileMenuOpen]);
+
+  // Prevent background scroll when mobile drawer is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isMobileMenuOpen]);
 
   const navItems = [
@@ -130,14 +142,19 @@ export default function Navbar({ currentPage, setCurrentPage }) {
             ))}
           </div>
 
-          {/* Right Action */}
+          {/* Right Action: Cart Button replacing Visit Us */}
           <div className="nav-actions">
             <button 
-              className="btn btn-primary btn-sm"
-              onClick={() => handleNavClick('contact')}
+              type="button"
+              className={`btn btn-primary btn-sm nav-cart-btn ${currentPage === 'cart' ? 'active' : ''}`}
+              onClick={() => handleNavClick('cart')}
+              aria-label={`Shopping cart with ${totalCartItems} items`}
             >
-              <MapPin size={14} aria-hidden="true" />
-              <span>Visit Us</span>
+              <ShoppingCart size={15} aria-hidden="true" />
+              <span>Cart</span>
+              {totalCartItems > 0 && (
+                <span className="nav-cart-badge">{totalCartItems}</span>
+              )}
             </button>
 
             {/* Mobile Hamburger Toggle */}
@@ -187,15 +204,39 @@ export default function Navbar({ currentPage, setCurrentPage }) {
                 {item.label}
               </a>
             ))}
+            <a
+              href="/coffee-beans"
+              data-text="All Coffee Beans"
+              className={`nav-link ${currentPage === 'coffee-beans' ? 'active' : ''}`}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('coffee-beans');
+              }}
+            >
+              All Coffee Beans
+            </a>
+            <a
+              href="/cart"
+              data-text="Cart"
+              className={`nav-link ${currentPage === 'cart' ? 'active' : ''}`}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('cart');
+              }}
+            >
+              Cart {totalCartItems > 0 ? `(${totalCartItems})` : ''}
+            </a>
           </div>
           <div className="mobile-drawer-footer">
             <button 
-              className="btn btn-primary"
-              onClick={() => handleNavClick('contact')}
+              type="button"
+              className="btn btn-primary nav-drawer-cart-btn"
+              onClick={() => handleNavClick('cart')}
               style={{ width: '100%' }}
+              aria-label={`Open shopping cart with ${totalCartItems} items`}
             >
-              <MapPin size={16} aria-hidden="true" />
-              <span>Visit Us</span>
+              <ShoppingCart size={17} aria-hidden="true" />
+              <span>Cart {totalCartItems > 0 ? `(${totalCartItems})` : ''}</span>
             </button>
             <div className="mobile-drawer-info">
               <p><strong>Hours:</strong> Daily 12:00 PM – 10:00 PM</p>

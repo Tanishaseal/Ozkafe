@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
-import { ChevronLeft, ChevronRight, Tag } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Tag, ShoppingCart } from 'lucide-react';
 
-export default function CategoryShelfRow({ category, coffees, selectedSizes, onSizeChange }) {
+export default function CategoryShelfRow({ category, coffees, onAddToCart }) {
   const scrollRef = useRef(null);
 
   const handleScroll = (direction) => {
@@ -58,16 +58,8 @@ export default function CategoryShelfRow({ category, coffees, selectedSizes, onS
 
       <div className="category-shelf-track" ref={scrollRef}>
         {coffees.map((coffee) => {
-          const sizeKeys = Object.keys(coffee.prices);
-          const defaultSize = sizeKeys.includes('250g') 
-            ? '250g' 
-            : sizeKeys.includes('100g') 
-              ? '100g' 
-              : sizeKeys.includes('500 ml') 
-                ? '500 ml' 
-                : sizeKeys[0];
-          const currentSize = selectedSizes[coffee.id] || defaultSize;
-          const price = coffee.prices[currentSize];
+          const pricesList = Object.values(coffee.prices || {});
+          const startingPrice = pricesList.length > 0 ? Math.min(...pricesList) : 0;
 
           return (
             <article key={coffee.id} className="shelf-coffee-card">
@@ -78,9 +70,10 @@ export default function CategoryShelfRow({ category, coffees, selectedSizes, onS
                   className="shelf-packet-img" 
                   loading="lazy" 
                   onError={(e) => {
-                    if (coffee.image && coffee.image.endsWith('.webp')) {
-                      e.currentTarget.src = coffee.image.replace('.webp', '.png');
-                    } else if (e.currentTarget.src !== '/images/coffee_packet.png') {
+                    const currentSrc = e.currentTarget.getAttribute('src') || '';
+                    if (currentSrc.endsWith('.webp')) {
+                      e.currentTarget.src = currentSrc.replace('.webp', '.png');
+                    } else if (!currentSrc.includes('coffee_packet.png')) {
                       e.currentTarget.src = '/images/coffee_packet.png';
                     }
                   }}
@@ -96,26 +89,22 @@ export default function CategoryShelfRow({ category, coffees, selectedSizes, onS
                   )}
                 </div>
 
-                {/* Size Selector */}
-                <div className="shelf-size-selector" role="group" aria-label={`Select size for ${coffee.name}`}>
-                  {sizeKeys.map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      className={`shelf-size-btn ${currentSize === size ? 'active' : ''}`}
-                      onClick={() => onSizeChange(coffee.id, size)}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Price Section with Excl. 5% GST explicitly shown */}
+                {/* Price Section with Excl. 5% GST and Add to Cart Button */}
                 <div className="shelf-card-price-row">
                   <div className="shelf-price-wrap">
-                    <span className="shelf-price-val">₹{price}</span>
+                    <span className="shelf-price-from">From</span>
+                    <span className="shelf-price-val">₹{startingPrice}</span>
                     <span className="shelf-price-tag">Excl. 5% GST</span>
                   </div>
+                  <button
+                    type="button"
+                    className="shelf-add-cart-btn"
+                    onClick={() => onAddToCart && onAddToCart(coffee)}
+                    aria-label={`Add ${coffee.name} to cart`}
+                  >
+                    <ShoppingCart size={15} aria-hidden="true" />
+                    <span>Add to Cart</span>
+                  </button>
                 </div>
               </div>
             </article>

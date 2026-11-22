@@ -7,13 +7,8 @@ import { CAFE_INFO } from '../data/cafeData';
 import CategoryShelfRow from '../components/CategoryShelfRow';
 import './CoffeeBeans.css';
 
-export default function Commercial({ setCurrentPage }) {
+export default function Commercial({ setCurrentPage, onAddToCart }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSizes, setSelectedSizes] = useState({});
-
-  const handleSizeChange = (coffeeId, size) => {
-    setSelectedSizes(prev => ({ ...prev, [coffeeId]: size }));
-  };
 
   const filteredCoffeesByCategory = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -161,7 +156,8 @@ export default function Commercial({ setCurrentPage }) {
                     <button
                       key={cat.id}
                       type="button"
-                      className="quicknav-pill-btn"
+                      className={`quicknav-pill-btn ${count === 0 ? 'disabled' : ''}`}
+                      disabled={count === 0}
                       onClick={() => scrollToCategory(cat.id)}
                     >
                       <span>{cat.name}</span>
@@ -187,8 +183,7 @@ export default function Commercial({ setCurrentPage }) {
                   key={cat.id}
                   category={cat}
                   coffees={filteredCoffeesByCategory[cat.id] || []}
-                  selectedSizes={selectedSizes}
-                  onSizeChange={handleSizeChange}
+                  onAddToCart={onAddToCart}
                 />
               ))}
             </div>
@@ -271,7 +266,7 @@ export default function Commercial({ setCurrentPage }) {
               </button>
               <a 
                 href={`tel:${CAFE_INFO.phone}`}
-                className="btn btn-outline"
+                className="btn btn-outline-white"
               >
                 <Phone size={16} aria-hidden="true" />
                 <span>Call {CAFE_INFO.phone}</span>

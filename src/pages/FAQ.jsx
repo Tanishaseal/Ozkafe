@@ -160,6 +160,8 @@ export default function FAQ({ setCurrentPage }) {
                       className="faq-question-btn"
                       onClick={() => toggleAccordion(faq.id)}
                       aria-expanded={isOpen}
+                      aria-controls={`faq-answer-${faq.id}`}
+                      id={`faq-btn-${faq.id}`}
                     >
                       <span>{faq.question}</span>
                       <ChevronDown 
@@ -169,7 +171,12 @@ export default function FAQ({ setCurrentPage }) {
                       />
                     </button>
                     {isOpen && (
-                      <div className="faq-answer-panel animate-fade-in">
+                      <div 
+                        id={`faq-answer-${faq.id}`}
+                        role="region"
+                        aria-labelledby={`faq-btn-${faq.id}`}
+                        className="faq-answer-panel animate-fade-in"
+                      >
                         <p>{faq.answer}</p>
                       </div>
                     )}

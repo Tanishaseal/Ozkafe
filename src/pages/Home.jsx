@@ -77,7 +77,9 @@ export default function Home({ setCurrentPage }) {
     // home video naturally transitions at ~30.5s; loop seamlessly
     if (videoRef.current && videoRef.current.currentTime >= 30.5) {
       videoRef.current.currentTime = 0;
-      videoRef.current.play();
+      if (isPlaying) {
+        videoRef.current.play().catch(() => {});
+      }
     }
   };
 
@@ -96,6 +98,8 @@ export default function Home({ setCurrentPage }) {
           loop
           preload="metadata"
           onTimeUpdate={handleTimeUpdate}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
         />
         <div className="hero-video-overlay" />
 
