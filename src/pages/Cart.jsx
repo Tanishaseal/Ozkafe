@@ -501,11 +501,11 @@ export function CartInner({
 
                     <div className="checkout-alt-row">
                       <a 
-                        href={CAFE_INFO.contact.phoneTel}
+                        href={`tel:${(CAFE_INFO.phone || '+917605023132').replace(/\s+/g, '')}`}
                         className="btn btn-secondary btn-call-order"
                       >
                         <Phone size={15} aria-hidden="true" />
-                        <span>Call {CAFE_INFO.contact.phone}</span>
+                        <span>Call {CAFE_INFO.phone || '+91 7605 023 132'}</span>
                       </a>
                     </div>
                   </div>
@@ -513,7 +513,7 @@ export function CartInner({
                   {/* Roastery Experience Center Note */}
                   <div className="cart-experience-note">
                     <strong>Pickup / Experience Center:</strong>
-                    <p>{CAFE_INFO.location.address} — Open daily {CAFE_INFO.hours.display}</p>
+                    <p>{CAFE_INFO.address || '30/4, Broad St, Ballygunge Park, Kolkata'} — {CAFE_INFO.hours || 'Open daily from 12:00 PM to 10:00 PM'}</p>
                   </div>
                 </div>
               </aside>
