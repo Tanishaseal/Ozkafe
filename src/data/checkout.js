@@ -29,8 +29,8 @@ export function validateCheckout(draft, step) {
     if (draft.separateBilling) checkAddress(draft.billing, 'billing');
   }
   if (step === 2 || step === undefined) {
-    if (draft.payment !== 'online') errors.payment = 'Select online payment to preview this checkout.';
-    if (!draft.acknowledged) errors.acknowledged = 'Confirm that you understand this is a demo order.';
+    if (draft.payment !== 'online') errors.payment = 'Select online payment to continue.';
+    if (!draft.acknowledged) errors.acknowledged = 'Confirm that you understand this is a test payment.';
   }
   return errors;
 }

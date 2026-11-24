@@ -18,7 +18,7 @@ export default function Cart({ cart, updateCartItem, removeFromCart, clearCart, 
           </div><div className="store-cart-bottom"><Quantity value={item.quantity} onChange={quantity => updateCartItem(item.id, { quantity })} name={item.name} /><button className="store-text-button" onClick={() => removeFromCart(item.id)} aria-label={`Remove ${item.name}`}><Trash2 size={16} />Remove</button><div><strong>{money(item.prices[item.selectedSize] * item.quantity)}</strong><span className="store-small store-muted">Excl. 5% GST</span></div></div>
         </div>
       </article>)}<ShopLink navigate={navigate} className="store-text-button">Continue shopping</ShopLink></section>
-      <OrderSummary cart={cart}><ShopLink navigate={navigate} page="checkout" className="btn btn-primary store-wide">Proceed to checkout</ShopLink><p className="store-summary-note">Enter your details, review your order and preview checkout.</p></OrderSummary>
+      <OrderSummary cart={cart}><ShopLink navigate={navigate} page="checkout" className="btn btn-primary store-wide">Proceed to checkout</ShopLink><p className="store-summary-note">Enter your details, review your order and try Razorpay test checkout.</p></OrderSummary>
     </div>}
   </div>;
 }

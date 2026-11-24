@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "test": "node --test src/data/commerce.test.js",
+    "test": "node --test src/data/commerce.test.js server/payment-service.test.js",
     "test:ui": "node scripts/check-storefront.mjs",
     "dev": "vite",
     "build": "vite build",

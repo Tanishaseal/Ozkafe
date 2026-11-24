@@ -4,6 +4,8 @@ import { spawn } from 'node:child_process';
 import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { join, resolve, dirname } from 'node:path';
 import assert from 'node:assert/strict';
+import { createPaymentService } from '../server/payment-service.js';
+import { providerFixture, testEnv } from '../server/payment-fixture.js';
 
 const origin = process.env.STORE_URL || 'http://127.0.0.1:5173';
 const out = resolve('node_modules/.cache/ozkafe-qa');
@@ -81,6 +83,38 @@ try {
   };
   const checkTotal = async expected => assert.equal(await evaluate(`document.querySelector('.store-total dd').textContent`), expected);
   await call('Runtime.enable'); await call('Page.enable');
+  // Intercept only in this isolated QA browser. No test hooks ship in the app.
+  const provider = providerFixture();
+  const service = createPaymentService({ env: testEnv, fetchImpl: provider.fetchImpl });
+  let enabled = true;
+  await call('Fetch.enable', { patterns: [{ urlPattern: `${origin}/api/payments*` }] });
+  await call('Runtime.addBinding', { name: '__qaOpen' });
+  ws.addEventListener('message', async event => {
+    const message = JSON.parse(event.data);
+    try {
+      if (message.method === 'Fetch.requestPaused') {
+        const { requestId, request } = message.params;
+        let responseCode = 200; let body;
+        try {
+          if (request.method === 'GET') body = { enabled, mode: 'test' };
+          else { const input = JSON.parse(request.postData); body = await service[input.action](input); }
+        } catch (error) { responseCode = error.status || 500; body = { error: error.message }; }
+        await call('Fetch.fulfillRequest', { requestId, responseCode, responseHeaders: [{ name: 'Content-Type', value: 'application/json' }], body: Buffer.from(JSON.stringify(body)).toString('base64') });
+      }
+      if (message.method === 'Runtime.bindingCalled' && message.params.name === '__qaOpen') {
+        const { orderId, mode } = JSON.parse(message.params.payload);
+        if (mode === 'cancel') await evaluate('window.__qaWidget.options.modal.ondismiss()');
+        else if (mode === 'lost-callback') {
+          provider.authorize(orderId, { status: 'captured', captured: true });
+          await evaluate('window.__qaWidget.options.modal.ondismiss()');
+        } else {
+          const callback = mode === 'forged' ? { razorpay_order_id: orderId, razorpay_payment_id: 'pay_forged', razorpay_signature: '0'.repeat(64) } : provider.authorize(orderId);
+          await evaluate(`window.__qaWidget.options.handler(${JSON.stringify(callback)})`);
+        }
+      }
+    } catch (error) { errors.push(`Payment test interception: ${error.message}`); }
+  });
+  await call('Page.addScriptToEvaluateOnNewDocument', { source: `window.Razorpay = class { constructor(options) { this.options = options; window.__qaWidget = this; } on() {} open() { window.__qaOpen(JSON.stringify({ orderId: this.options.order_id, mode: window.__qaPaymentMode || 'success' })); } };` });
   await viewport(1440);
   await goto('/shop');
   await until(`location.pathname === '/coffee-beans'`);
@@ -126,10 +160,26 @@ try {
   await button('Review order'); await click('#payment'); await click('#acknowledged');
   assert.ok(await evaluate(`document.querySelector('form').textContent.includes('42 Billing Street')`), 'Separate billing address appears in review');
   await viewport(1440); await shot('review-desktop');
-  await button('Create demo order');
+  await evaluate("window.__qaPaymentMode = 'cancel'");
+  await button('Pay with Razorpay (test)');
+  await until(`document.body.textContent.includes('Checkout was closed')`);
+  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('ozkafe_cart'))[0].quantity`), 2, 'Cancelled payment preserves cart');
+  assert.ok(await evaluate(`Boolean(sessionStorage.getItem('ozkafe_test_payment'))`));
+  await evaluate("window.__qaPaymentMode = 'forged'");
+  await button('Pay with Razorpay (test)');
+  await until(`document.body.textContent.includes('signature could not be verified')`);
+  assert.equal(await evaluate('location.pathname'), '/checkout', 'Forged payment cannot show success');
+  await goto('/checkout');
+  await button('Check payment status / restore');
+  await until(`document.body.textContent.includes('saved checkout has been restored')`);
+  assert.ok(await evaluate(`document.querySelector('form').textContent.includes('42 Billing Street')`));
+  await viewport(320); await noOverflow('Payment recovery 320px'); await shot('payment-recovery-mobile');
+  await viewport(1440);
+  await button('Pay with Razorpay (test)');
   await until(`location.pathname === '/confirmation'`);
   await checkTotal('₹516.60');
-  assert.ok(await evaluate(`document.body.textContent.includes('Your order preview is ready.')`));
+  assert.ok(await evaluate(`document.body.textContent.includes('Your test payment is confirmed.')`));
+  assert.equal(provider.orders.size, 1, 'Payment retries reuse one provider order');
   assert.equal(await evaluate(`JSON.parse(localStorage.getItem('ozkafe_cart')).length`), 0);
   assert.equal(await evaluate(`localStorage.getItem('ozkafe_cart').includes('test@example.com')`), false);
   await shot('confirmation-desktop');
@@ -146,7 +196,12 @@ try {
   await click('input[value=delivery]'); await checkTotal('₹455.07');
   await click('input[value=pickup]'); await checkTotal('₹439.95');
   assert.equal(await evaluate(`document.querySelectorAll('input[id^="shipping."]').length`), 0);
-  await button('Review order'); await click('#payment'); await click('#acknowledged'); await button('Create demo order');
+  await button('Review order'); await click('#payment'); await click('#acknowledged');
+  await evaluate("window.__qaPaymentMode = 'lost-callback'");
+  await button('Pay with Razorpay (test)');
+  await until(`document.body.textContent.includes('Checkout was closed')`);
+  await goto('/checkout');
+  await button('Check payment status / restore');
   await until(`location.pathname === '/confirmation'`);
   assert.ok(await evaluate(`document.querySelector('.store-totals').textContent.includes('Not applicable (pickup)')`));
   await checkTotal('₹439.95');
@@ -173,13 +228,16 @@ try {
   await goto('/product?id=does-not-exist');
   assert.ok(await evaluate(`document.body.textContent.includes('Coffee not found')`));
   await goto('/confirmation?id=missing');
-  assert.ok(await evaluate(`document.body.textContent.includes('No order preview to show')`));
+  assert.ok(await evaluate(`document.body.textContent.includes('No test receipt to show')`));
+  enabled = false;
+  await goto('/checkout');
+  await until(`document.body.textContent.includes('Test payments are currently unavailable')`);
   await goto('/cart');
   await evaluate(`localStorage.setItem('ozkafe_cart','{"bad":true}')`);
   await goto('/cart');
   assert.ok(await evaluate(`document.body.textContent.includes('Your next cup is waiting')`));
   assert.deepEqual(errors, [], 'No browser runtime errors');
-  console.log('PASS: retired shop redirect, catalog search, variants, cart, delivery fees, GST, pickup, cold brew, demo orders, mobile navigation and responsive widths 320–1440px.');
+  console.log('PASS: catalogue, cart, delivery/GST, pickup, payment cancellation, forged callbacks, retry reuse, refresh recovery, verified test orders, unavailable gateway, mobile navigation and responsive widths 320–1440px. Payment provider and SDK are mocked; real payment-service validation runs.');
   console.log(`Screenshots: ${out}`);
   await call('Browser.close').catch(() => {});
 } finally {

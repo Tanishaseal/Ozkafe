@@ -3,6 +3,7 @@ import { CreditCard, Info, MapPin, Truck } from 'lucide-react';
 import { CAFE_INFO } from '../data/cafeData';
 import { INDIA_STATES, validateCheckout } from '../data/checkout';
 import { EmptyState, OrderSummary, ShopLink } from '../components/CommerceUI';
+import usePaymentCheckout from '../data/usePaymentCheckout';
 
 function Field({ id, label, value, onChange, error, full = false, children, ...props }) {
   return <label className={`store-field ${full ? 'is-full' : ''}`} htmlFor={id}><span>{label}{props.required && ' *'}</span>
@@ -29,11 +30,11 @@ export function AddressText({ address }) {
   return <div><p><strong>{address.name}</strong></p><p>{address.line1}{address.line2 && `, ${address.line2}`}</p>{address.landmark && <p>Landmark: {address.landmark}</p>}<p>{address.city}, {address.state} – {address.pin}</p><p>India</p></div>;
 }
 
-export default function Checkout({ cart, navigate, draft, setDraft, onComplete }) {
+export default function Checkout({ cart, navigate, draft, setDraft, onComplete, onRestore }) {
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
-  const submitting = useRef(false);
   const headingRef = useRef(null);
+  const payment = usePaymentCheckout({ cart, draft, onComplete, onRestore: order => { onRestore(order); setStep(2); setErrors({}); } });
   const steps = ['Contact details', 'Delivery / pickup', 'Payment & review'];
   const edit = (key, value) => {
     setDraft(previous => ({ ...previous, [key]: value }));
@@ -60,18 +61,25 @@ export default function Checkout({ cart, navigate, draft, setDraft, onComplete }
       return;
     }
     if (step < 2) { goStep(step + 1); return; }
-    if (submitting.current) return;
-    submitting.current = true;
-    onComplete();
+    if (!payment.available || payment.busy) return;
+    payment.pay();
   };
-  if (!cart.length) return <div className="store-page container store-content"><EmptyState title="Add a coffee before checking out" navigate={navigate}>Your cart is empty. Select your coffee and pack size to continue.</EmptyState></div>;
+  const paymentStatus = <>
+    {payment.message && <div className="store-error-summary" role="alert">{payment.message}</div>}
+    {payment.pending && <section className="store-panel store-payment-recovery" aria-label="Saved test checkout"><h2>Check your previous payment</h2><p>Reference: {payment.pending.orderId}</p><p>If you closed checkout or refreshed after paying, check the payment status before starting again. Unpaid checkout details can be restored in this tab for 48 hours.</p><div className="store-form-actions"><button type="button" className="btn btn-secondary" disabled={payment.busy} onClick={() => payment.check()}>Check payment status / restore</button><button type="button" className="store-text-button" disabled={payment.busy} onClick={() => payment.check(true)}>Start a new checkout if unpaid</button></div></section>}
+    {payment.busy && <p role="status" className="store-banner">Processing test checkout. Please keep this page open.</p>}
+  </>;
+  if (!cart.length) return <div className="store-page container store-content">{paymentStatus}<EmptyState title="Add a coffee before checking out" navigate={navigate}>Your cart is empty. Select your coffee and pack size to continue.</EmptyState></div>;
   return <div className="store-page container store-content">
     <nav className="store-breadcrumb" aria-label="Breadcrumb"><ShopLink navigate={navigate}>Coffee Beans</ShopLink><span>/</span><ShopLink navigate={navigate} page="cart">Cart</ShopLink><span>/</span><span aria-current="page">Checkout</span></nav>
     <div className="store-page-heading"><div><span className="store-eyebrow">GUEST CHECKOUT</span><h1>Make it your next cup.</h1><p>No account needed. Just your details and your favourite coffee.</p></div></div>
-    <div className="store-banner"><Info size={20} aria-hidden="true" /><p><strong>Checkout preview.</strong> No payment will be taken and no real order will be placed. Form details and demo orders are cleared when you refresh this page.</p></div>
-    <ol className="store-steps" aria-label="Checkout progress">{steps.map((label, index) => <li key={label} aria-current={index === step ? 'step' : undefined}>{index < step ? <button onClick={() => goStep(index)}>✓ {label}</button> : <span>{index + 1}. {label}</span>}</li>)}</ol>
+    <div className="store-banner"><Info size={20} aria-hidden="true" /><p><strong>Razorpay test mode.</strong> Use test payment details only. No real money will be charged and no coffee will be shipped or prepared. Your contact, address and order details are saved with the test order in Razorpay.</p></div>
+    {payment.available === false && <div className="store-error-summary" role="alert">Test payments are currently unavailable. Please contact Ozkafe or try again later.</div>}
+    {paymentStatus}
+    <ol className="store-steps" aria-label="Checkout progress">{steps.map((label, index) => <li key={label} aria-current={index === step ? 'step' : undefined}>{index < step ? <button disabled={payment.busy} onClick={() => goStep(index)}>✓ {label}</button> : <span>{index + 1}. {label}</span>}</li>)}</ol>
     <div className="store-checkout-layout"><form className="store-form-panel store-panel" onSubmit={submit} noValidate>
-      <h2 ref={headingRef} tabIndex={-1}>{steps[step]}</h2><p>{step === 0 ? 'Your contact details for this order. Fields marked * are required.' : step === 1 ? 'Choose how you would like to receive your coffee.' : 'Check your selections and details before creating a demo order.'}</p>
+      <fieldset className="store-checkout-fields" disabled={payment.busy}>
+      <h2 ref={headingRef} tabIndex={-1}>{steps[step]}</h2><p>{step === 0 ? 'Your contact details for this order. Fields marked * are required.' : step === 1 ? 'Choose how you would like to receive your coffee.' : 'Check your selections and details before opening Razorpay test checkout.'}</p>
       {Object.keys(errors).length > 0 && <div className="store-error-summary" role="alert"><strong>Please check the following:</strong>{Object.entries(errors).map(([key, message]) => <a key={key} href={`#${key}`} onClick={event => { event.preventDefault(); document.getElementById(key)?.focus(); }}>{message}</a>)}</div>}
       {step === 0 && <div className="store-form-grid">
         <Field id="name" label="Full name" required full autoComplete="name" maxLength={100} value={draft.name} onChange={value => edit('name', value)} error={errors.name} />
@@ -94,10 +102,11 @@ export default function Checkout({ cart, navigate, draft, setDraft, onComplete }
         <section className="store-review-section"><div className="store-review-title"><h3>{draft.fulfilment === 'pickup' ? 'Café pickup' : 'Delivery address'}</h3><button type="button" className="store-text-button" onClick={() => goStep(1)}>Edit delivery</button></div>{draft.fulfilment === 'pickup' ? <><p>{CAFE_INFO.address}</p><p>{CAFE_INFO.hours}</p></> : <AddressText address={draft.shipping} />}</section>
         <section className="store-review-section"><h3>Billing address</h3>{draft.separateBilling ? <AddressText address={draft.billing} /> : <p>{draft.fulfilment === 'delivery' ? 'Same as delivery address' : 'Not provided for café pickup'}</p>}</section>
         {draft.notes.trim() && <section className="store-review-section"><h3>Order notes</h3><p>{draft.notes}</p></section>}
-        <fieldset className="store-form-section"><legend>Payment method *</legend><label className="store-choice"><input id="payment" type="radio" name="payment" checked={draft.payment === 'online'} onChange={() => edit('payment', 'online')} aria-describedby={errors.payment ? 'payment-error' : undefined} /><div><CreditCard size={24} /><strong>Pay online with Razorpay</strong><span>Online payment preview</span><span>Payment will be available when checkout goes live. No card, UPI, OTP or bank details are needed here.</span></div></label>{errors.payment && <p className="store-error" id="payment-error">{errors.payment}</p>}</fieldset>
-        <label className="store-check"><input id="acknowledged" type="checkbox" checked={draft.acknowledged} onChange={event => edit('acknowledged', event.target.checked)} aria-describedby={errors.acknowledged ? 'acknowledged-error' : undefined} /><span>I understand this creates a demo order only. Nothing will be charged, delivered or prepared for pickup.</span></label>{errors.acknowledged && <p className="store-error" id="acknowledged-error">{errors.acknowledged}</p>}
+        <fieldset className="store-form-section"><legend>Payment method *</legend><label className="store-choice"><input id="payment" type="radio" name="payment" checked={draft.payment === 'online'} onChange={() => edit('payment', 'online')} aria-describedby={errors.payment ? 'payment-error' : undefined} /><div><CreditCard size={24} /><strong>Pay online with Razorpay</strong><span>Test payment</span><span>Payment details are entered securely in Razorpay’s checkout window.</span></div></label>{errors.payment && <p className="store-error" id="payment-error">{errors.payment}</p>}</fieldset>
+        <label className="store-check"><input id="acknowledged" type="checkbox" checked={draft.acknowledged} onChange={event => edit('acknowledged', event.target.checked)} aria-describedby={errors.acknowledged ? 'acknowledged-error' : undefined} /><span>I understand this is a test payment. No real money will be charged and nothing will be delivered or prepared for pickup.</span></label>{errors.acknowledged && <p className="store-error" id="acknowledged-error">{errors.acknowledged}</p>}
       </>}
-      <div className="store-form-actions">{step > 0 ? <button className="btn btn-secondary" type="button" onClick={() => goStep(step - 1)}>Back</button> : <ShopLink navigate={navigate} page="cart" className="store-text-button">Back to cart</ShopLink>}<button type="submit" className="btn btn-primary">{step === 0 ? 'Continue to delivery' : step === 1 ? 'Review order' : 'Create demo order'}</button></div>
+      <div className="store-form-actions">{step > 0 ? <button className="btn btn-secondary" type="button" onClick={() => goStep(step - 1)}>Back</button> : <ShopLink navigate={navigate} page="cart" className="store-text-button">Back to cart</ShopLink>}<button type="submit" className="btn btn-primary" disabled={payment.busy || (step === 2 && !payment.available)}>{payment.busy ? 'Processing…' : step === 0 ? 'Continue to delivery' : step === 1 ? 'Review order' : payment.available === null ? 'Checking payments…' : 'Pay with Razorpay (test)'}</button></div>
+      </fieldset>
     </form><OrderSummary cart={cart} showItems fulfilment={draft.fulfilment}><ShopLink navigate={navigate} page="cart" className="store-text-button">Edit items in cart</ShopLink></OrderSummary></div>
   </div>;
 }

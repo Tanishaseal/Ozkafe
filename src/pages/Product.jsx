@@ -26,7 +26,7 @@ export default function Product({ productId, navigate, onAddToCart }) {
         <div className="store-product-quantity"><span>Quantity</span><Quantity value={quantity} onChange={value => { setQuantity(value); setAdded(false); }} name={product.name} /><strong>{money(product.prices[size] * quantity)}</strong></div>
         <div className="store-buy-actions"><button className="btn btn-primary" onClick={event => add(event)}><ShoppingBag size={18} />{added ? 'Add another' : 'Add to cart'}</button><button className="btn btn-secondary" onClick={event => add(event, true)}>Buy now</button></div>
         {added && <p className="store-added" role="status">Added to your cart. <ShopLink navigate={navigate} page="cart">View cart</ShopLink></p>}
-        <div className="store-product-note"><strong>A little closer to your next cup.</strong><p>Review your coffee and quantities in the cart, then enter your contact and delivery details at checkout.</p><p className="store-small">Ordering preview: payments and live order processing are not available yet.</p></div>
+        <div className="store-product-note"><strong>A little closer to your next cup.</strong><p>Review your coffee and quantities in the cart, then enter your contact and delivery details at checkout.</p><p className="store-small">Razorpay test checkout is available. Test orders do not involve real charges or fulfilment.</p></div>
       </section></div>
   </div>;
 }

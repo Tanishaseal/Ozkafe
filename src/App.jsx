@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Check, ArrowRight } from 'lucide-react';
 import './App.css';
 import Navbar from './components/Navbar';
@@ -24,8 +24,8 @@ import './commerce.css';
 const PAGE_TITLES = {
   product: 'Coffee Details | Ozkafe',
   checkout: 'Checkout | Ozkafe',
-  orders: 'Order Previews | Ozkafe',
-  confirmation: 'Order Preview | Ozkafe',
+  orders: 'Test Orders | Ozkafe',
+  confirmation: 'Test Payment Confirmation | Ozkafe',
   home: 'Ozkafe | Specialty Coffee Roastery & Cafe Experience Center | Kolkata',
   about: 'About Us | Ozkafe Specialty Coffee Roastery & Cafe | Kolkata',
   commercial: 'Commercial Blends & Wholesale Solutions | Ozkafe Kolkata',
@@ -107,6 +107,7 @@ export default function App() {
   const [routeSearch, setRouteSearch] = useState(window.location.search);
   const [checkoutDraft, setCheckoutDraft] = useState(newCheckout);
   const [orders, setOrders] = useState([]);
+  const completedPayments = useRef(new Set());
   const [cart, setCart] = useState(() => {
     try {
       const saved = localStorage.getItem('ozkafe_cart');
@@ -339,14 +340,17 @@ export default function App() {
 
   const totalCartItems = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
 
-  const handleDemoOrder = () => {
-    if (!cart.length) return;
-    const id = `DEMO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
-    setOrders(previous => [{ id, createdAt: new Date().toISOString(), items: structuredClone(cart), details: structuredClone(checkoutDraft) }, ...previous]);
-    setCart([]);
+  const handlePaidOrder = order => {
+    if (order.status !== 'paid' || order.mode !== 'test') return;
+    setOrders(previous => [order, ...previous.filter(saved => saved.id !== order.id)]);
+    if (!completedPayments.current.has(order.id)) {
+      completedPayments.current.add(order.id);
+      // Preserve items added while a payment was being processed.
+      setCart(previous => previous.map(item => ({ ...item, quantity: item.quantity - (order.items.find(paid => paid.id === item.id)?.quantity || 0) })).filter(item => item.quantity > 0));
+    }
     setCheckoutDraft(newCheckout());
     setCartToast(null);
-    handlePageChange('confirmation', { id });
+    handlePageChange('confirmation', { id: order.id });
   };
 
   return (
@@ -366,7 +370,7 @@ export default function App() {
       {/* Main Pages */}
       <main id="main-content" tabIndex={-1}>
         {currentPage === 'product' && <Product key={routeSearch} productId={new URLSearchParams(routeSearch).get('id')} navigate={handlePageChange} onAddToCart={handleAddToCart} />}
-        {currentPage === 'checkout' && <Checkout cart={cart} navigate={handlePageChange} draft={checkoutDraft} setDraft={setCheckoutDraft} onComplete={handleDemoOrder} />}
+        {currentPage === 'checkout' && <Checkout cart={cart} navigate={handlePageChange} draft={checkoutDraft} setDraft={setCheckoutDraft} onComplete={handlePaidOrder} onRestore={order => { setCart(order.items); setCheckoutDraft(order.details); }} />}
         {currentPage === 'orders' && <Orders orders={orders} navigate={handlePageChange} clearOrders={() => setOrders([])} />}
         {currentPage === 'confirmation' && <OrderConfirmation order={orders.find(order => order.id === new URLSearchParams(routeSearch).get('id'))} navigate={handlePageChange} />}
         {currentPage === 'home' && (

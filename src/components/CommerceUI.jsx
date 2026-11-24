@@ -24,8 +24,8 @@ export function Quantity({ value, onChange, name }) {
   </div>;
 }
 
-export function OrderSummary({ cart, children, showItems = false, fulfilment = '' }) {
-  const totals = cartTotals(cart, fulfilment);
+export function OrderSummary({ cart, children, showItems = false, fulfilment = '', confirmedTotals }) {
+  const totals = confirmedTotals || cartTotals(cart, fulfilment);
   return <aside className="store-summary store-panel" aria-label="Order summary">
     <h2>Order summary <span>({totals.count})</span></h2>
     {showItems && <ul className="store-summary-items">{cart.map(item => <li key={item.id}>
