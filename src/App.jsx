@@ -14,8 +14,20 @@ import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import FlyToCartAnimation from './components/FlyToCartAnimation';
 import { getProductBackImage } from './data/coffeeBeansData';
+import { normalizeCart, supportsGrind } from './data/commerce';
+import Shop from './pages/Shop';
+import Product from './pages/Product';
+import Checkout from './pages/Checkout';
+import Orders, { OrderConfirmation } from './pages/Orders';
+import { newCheckout } from './data/checkout';
+import './commerce.css';
 
 const PAGE_TITLES = {
+  shop: 'Shop Coffee | Ozkafe',
+  product: 'Coffee Details | Ozkafe',
+  checkout: 'Checkout | Ozkafe',
+  orders: 'Order Previews | Ozkafe',
+  confirmation: 'Order Preview | Ozkafe',
   home: 'Ozkafe | Specialty Coffee Roastery & Cafe Experience Center | Kolkata',
   about: 'About Us | Ozkafe Specialty Coffee Roastery & Cafe | Kolkata',
   commercial: 'Commercial Blends & Wholesale Solutions | Ozkafe Kolkata',
@@ -28,6 +40,7 @@ const PAGE_TITLES = {
 };
 
 const PAGE_ROUTES = {
+  shop: '/shop', product: '/product', checkout: '/checkout', orders: '/orders', confirmation: '/confirmation',
   home: '/',
   about: '/aboutus',
   commercial: '/commercial',
@@ -44,6 +57,8 @@ const getPageFromLocation = () => {
 
   // 1. Check pathname (e.g. /, /home, /aboutus, /commercial, /single-origin, /instant-coffee, /contactus, /faq)
   const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  const storePage = ['shop', 'product', 'checkout', 'orders', 'confirmation'].find(page => pathname === `/${page}`);
+  if (storePage) return storePage;
   
   if (pathname === '/' || pathname === '/home' || pathname === '/index.html') {
     return 'home';
@@ -90,10 +105,13 @@ const getPageFromLocation = () => {
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(getPageFromLocation);
+  const [routeSearch, setRouteSearch] = useState(window.location.search);
+  const [checkoutDraft, setCheckoutDraft] = useState(newCheckout);
+  const [orders, setOrders] = useState([]);
   const [cart, setCart] = useState(() => {
     try {
       const saved = localStorage.getItem('ozkafe_cart');
-      return saved ? JSON.parse(saved) : [];
+      return saved ? normalizeCart(JSON.parse(saved)) : [];
     } catch {
       return [];
     }
@@ -164,12 +182,13 @@ export default function App() {
     const syncRouteFromLocation = () => {
       const resolvedPage = getPageFromLocation();
       setCurrentPage(resolvedPage);
+      setRouteSearch(window.location.search);
     };
 
     // If initial URL had a hash like #home, replace it cleanly with clean path (e.g. / for home)
     if (window.location.hash) {
       const initialPage = getPageFromLocation();
-      const cleanPath = PAGE_ROUTES[initialPage] || '/';
+      const cleanPath = (PAGE_ROUTES[initialPage] || '/') + window.location.search;
       window.history.replaceState({ page: initialPage }, '', cleanPath);
     }
 
@@ -188,21 +207,23 @@ export default function App() {
     }
   }, [currentPage]);
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page, params) => {
     setCurrentPage(page);
-    const targetPath = PAGE_ROUTES[page] || '/';
+    const search = params ? `?${new URLSearchParams(params)}` : '';
+    setRouteSearch(search);
+    const targetPath = (PAGE_ROUTES[page] || '/') + search;
 
     // Update browser URL bar cleanly using HTML5 History API without #hash
-    if (window.location.pathname !== targetPath || window.location.hash) {
+    if (window.location.pathname + window.location.search !== targetPath || window.location.hash) {
       window.history.pushState({ page }, '', targetPath);
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleAddToCart = (coffee, event = null) => {
+  const handleAddToCart = (coffee, event = null, options = {}) => {
     const sizeKeys = Object.keys(coffee.prices || {});
-    const defaultSize = (
+    const defaultSize = options.selectedSize || (
       sizeKeys.includes('250g') 
         ? '250g' 
         : sizeKeys.includes('100g') 
@@ -211,7 +232,8 @@ export default function App() {
             ? '500 ml' 
             : sizeKeys[0] || 'Standard'
     );
-    const defaultGrind = 'Whole Beans';
+    const defaultGrind = supportsGrind(coffee) ? (options.selectedGrind || 'Whole Beans') : '';
+    const quantity = Number.isSafeInteger(options.quantity) && options.quantity > 0 ? options.quantity : 1;
 
     setCart((prevCart) => {
       const existingIndex = prevCart.findIndex(
@@ -222,9 +244,9 @@ export default function App() {
         const updated = [...prevCart];
         updated[existingIndex] = {
           ...updated[existingIndex],
-          quantity: (updated[existingIndex].quantity || 1) + 1
+          quantity: (updated[existingIndex].quantity || 1) + quantity
         };
-        return updated;
+        return normalizeCart(updated);
       }
 
       const newItem = {
@@ -239,10 +261,10 @@ export default function App() {
         prices: coffee.prices,
         selectedSize: defaultSize,
         selectedGrind: defaultGrind,
-        quantity: 1
+        quantity
       };
 
-      return [...prevCart, newItem];
+      return normalizeCart([...prevCart, newItem]);
     });
 
     // 1. Calculate flying start and end coordinates
@@ -298,7 +320,7 @@ export default function App() {
 
   const handleUpdateCartItem = (itemId, updates) => {
     setCart((prevCart) =>
-      prevCart.map((item) => (item.id === itemId ? { ...item, ...updates } : item))
+      normalizeCart(prevCart.map((item) => (item.id === itemId ? { ...item, ...updates } : item)))
     );
   };
 
@@ -312,8 +334,19 @@ export default function App() {
 
   const totalCartItems = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
 
+  const handleDemoOrder = () => {
+    if (!cart.length) return;
+    const id = `DEMO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+    setOrders(previous => [{ id, createdAt: new Date().toISOString(), items: structuredClone(cart), details: structuredClone(checkoutDraft) }, ...previous]);
+    setCart([]);
+    setCheckoutDraft(newCheckout());
+    setCartToast(null);
+    handlePageChange('confirmation', { id });
+  };
+
   return (
     <div className="app-layout">
+      <a href="#main-content" className="store-skip-link">Skip to content</a>
       {/* Navbar with brand and navigation links */}
       <Navbar 
         currentPage={currentPage} 
@@ -326,7 +359,12 @@ export default function App() {
       <FlyToCartAnimation items={flyingItems} />
 
       {/* Main Pages */}
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
+        {currentPage === 'shop' && <Shop key={routeSearch} search={routeSearch} navigate={handlePageChange} />}
+        {currentPage === 'product' && <Product key={routeSearch} productId={new URLSearchParams(routeSearch).get('id')} navigate={handlePageChange} onAddToCart={handleAddToCart} />}
+        {currentPage === 'checkout' && <Checkout cart={cart} navigate={handlePageChange} draft={checkoutDraft} setDraft={setCheckoutDraft} onComplete={handleDemoOrder} />}
+        {currentPage === 'orders' && <Orders orders={orders} navigate={handlePageChange} clearOrders={() => setOrders([])} />}
+        {currentPage === 'confirmation' && <OrderConfirmation order={orders.find(order => order.id === new URLSearchParams(routeSearch).get('id'))} navigate={handlePageChange} />}
         {currentPage === 'home' && (
           <Home 
             setCurrentPage={handlePageChange} 

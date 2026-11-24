@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Clock, MapPin, Phone, ShoppingCart } from 'lucide-react';
 import { CAFE_INFO } from '../data/cafeData';
 import './Navbar.css';
@@ -6,6 +6,30 @@ import './Navbar.css';
 export default function Navbar({ currentPage, setCurrentPage, totalCartItems = 0, isCartBumping = false }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const drawerRef = useRef(null);
+  const toggleRef = useRef(null);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const drawer = drawerRef.current;
+    drawer?.querySelector('button, a')?.focus();
+    const trapFocus = (event) => {
+      if (event.key !== 'Tab') return;
+      const elements = [...drawer.querySelectorAll('a[href], button:not([disabled])')];
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    const onResize = () => { if (window.innerWidth > 1040) setIsMobileMenuOpen(false); };
+    document.addEventListener('keydown', trapFocus);
+    window.addEventListener('resize', onResize);
+    return () => {
+      document.removeEventListener('keydown', trapFocus);
+      window.removeEventListener('resize', onResize);
+      toggleRef.current?.focus();
+    };
+  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,12 +64,13 @@ export default function Navbar({ currentPage, setCurrentPage, totalCartItems = 0
 
   const navItems = [
     { id: 'home', label: 'Home', path: '/' },
+    { id: 'shop', label: 'Shop Coffee', path: '/shop' },
     { id: 'about', label: 'About Us', path: '/aboutus' },
     { id: 'commercial', label: 'Commercial', path: '/commercial' },
     { id: 'single-origin', label: 'Single Origin', path: '/single-origin' },
     { id: 'instant-coffee', label: 'Instant Coffee', path: '/instant-coffee' },
     { id: 'contact', label: 'Contact Us', path: '/contactus' },
-    { id: 'faq', label: 'FAQ', path: '/faq' }
+    { id: 'orders', label: 'Orders', path: '/orders' }
   ];
 
   const handleNavClick = (pageId) => {
@@ -124,12 +149,12 @@ export default function Navbar({ currentPage, setCurrentPage, totalCartItems = 0
           </a>
 
           {/* Desktop Nav Links */}
-          <div className="nav-links" role="menubar">
+          <div className="nav-links">
             {navItems.map((item) => (
               <a
                 key={item.id}
                 href={item.path}
-                role="menuitem"
+                aria-current={currentPage === item.id ? 'page' : undefined}
                 data-text={item.label}
                 className={`nav-link ${currentPage === item.id ? 'active' : ''}`}
                 onClick={(e) => {
@@ -159,6 +184,7 @@ export default function Navbar({ currentPage, setCurrentPage, totalCartItems = 0
 
             {/* Mobile Hamburger Toggle */}
             <button
+              ref={toggleRef}
               className="mobile-toggle"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
@@ -182,7 +208,8 @@ export default function Navbar({ currentPage, setCurrentPage, totalCartItems = 0
 
       {/* Mobile Drawer */}
       {isMobileMenuOpen && (
-        <div id="mobile-nav-drawer" className="mobile-drawer animate-fade-in" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+        <div ref={drawerRef} id="mobile-nav-drawer" className="mobile-drawer animate-fade-in" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+          <button className="store-text-button" onClick={() => setIsMobileMenuOpen(false)} aria-label="Close navigation"><X size={18} />Close menu</button>
           <img 
             src="/images/illustrations/coffee_beans_sketch.png" 
             alt="" 

@@ -37,7 +37,7 @@ export default function Home({ setCurrentPage }) {
   };
 
   const navigateTo = (page) => {
-    setCurrentPage(page);
+    setCurrentPage(page === 'coffee-beans' ? 'shop' : page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Tag, ShoppingCart, Check } from 'lucide-react';
 
-export default function CategoryShelfRow({ category, coffees, onAddToCart }) {
+export default function CategoryShelfRow({ category, coffees, onAddToCart, onViewProduct }) {
   const scrollRef = useRef(null);
   const [recentlyAdded, setRecentlyAdded] = useState({});
 
@@ -13,6 +13,7 @@ export default function CategoryShelfRow({ category, coffees, onAddToCart }) {
   };
 
   const handleAddToCartClick = (coffee, e) => {
+    if (onViewProduct) { onViewProduct(coffee.id); return; }
     setRecentlyAdded((prev) => ({ ...prev, [coffee.id]: true }));
     setTimeout(() => {
       setRecentlyAdded((prev) => ({ ...prev, [coffee.id]: false }));
@@ -112,7 +113,7 @@ export default function CategoryShelfRow({ category, coffees, onAddToCart }) {
                     type="button"
                     className={`shelf-add-cart-btn ${recentlyAdded[coffee.id] ? 'added' : ''}`}
                     onClick={(e) => handleAddToCartClick(coffee, e)}
-                    aria-label={`Add ${coffee.name} to cart`}
+                    aria-label={onViewProduct ? `Choose options for ${coffee.name}` : `Add ${coffee.name} to cart`}
                   >
                     {recentlyAdded[coffee.id] ? (
                       <>
@@ -122,7 +123,7 @@ export default function CategoryShelfRow({ category, coffees, onAddToCart }) {
                     ) : (
                       <>
                         <ShoppingCart size={15} aria-hidden="true" />
-                        <span>Add to Cart</span>
+                        <span>{onViewProduct ? 'Choose options' : 'Add to Cart'}</span>
                       </>
                     )}
                   </button>

@@ -196,6 +196,7 @@ export default function CoffeeBeans({ setCurrentPage, onAddToCart }) {
                   category={cat}
                   coffees={filteredCoffeesByCategory[cat.id] || []}
                   onAddToCart={onAddToCart}
+                  onViewProduct={(id) => setCurrentPage('product', { id })}
                 />
               ))}
             </div>
