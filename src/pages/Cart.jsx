@@ -7,7 +7,7 @@ import { EmptyState, OrderSummary, ProductImage, Quantity, ShopLink } from '../c
 export default function Cart({ cart, updateCartItem, removeFromCart, clearCart, setCurrentPage: navigate }) {
   const { count } = cartTotals(cart);
   return <div className="store-page container store-content">
-    <nav className="store-breadcrumb" aria-label="Breadcrumb"><ShopLink navigate={navigate}>Shop</ShopLink><span>/</span><span aria-current="page">Cart</span></nav>
+    <nav className="store-breadcrumb" aria-label="Breadcrumb"><ShopLink navigate={navigate}>Coffee Beans</ShopLink><span>/</span><span aria-current="page">Cart</span></nav>
     <div className="store-page-heading"><div><span className="store-eyebrow">YOUR COFFEE, YOUR WAY</span><h1>Your cart <span>({count})</span></h1><p>One step closer to a great cup. Check your selections below.</p></div>{cart.length > 0 && <button className="store-text-button" onClick={clearCart}><Trash2 size={16} />Clear cart</button>}</div>
     {!cart.length ? <EmptyState title="Your next cup is waiting" navigate={navigate}>Your cart is empty. Explore our coffees and choose a favourite.</EmptyState> : <div className="store-checkout-layout">
       <section className="store-cart-items" aria-label="Cart items">{cart.map(item => <article className="store-cart-item store-panel" key={item.id}>

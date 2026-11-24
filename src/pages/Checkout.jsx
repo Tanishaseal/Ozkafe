@@ -66,7 +66,7 @@ export default function Checkout({ cart, navigate, draft, setDraft, onComplete }
   };
   if (!cart.length) return <div className="store-page container store-content"><EmptyState title="Add a coffee before checking out" navigate={navigate}>Your cart is empty. Select your coffee and pack size to continue.</EmptyState></div>;
   return <div className="store-page container store-content">
-    <nav className="store-breadcrumb" aria-label="Breadcrumb"><ShopLink navigate={navigate}>Shop</ShopLink><span>/</span><ShopLink navigate={navigate} page="cart">Cart</ShopLink><span>/</span><span aria-current="page">Checkout</span></nav>
+    <nav className="store-breadcrumb" aria-label="Breadcrumb"><ShopLink navigate={navigate}>Coffee Beans</ShopLink><span>/</span><ShopLink navigate={navigate} page="cart">Cart</ShopLink><span>/</span><span aria-current="page">Checkout</span></nav>
     <div className="store-page-heading"><div><span className="store-eyebrow">GUEST CHECKOUT</span><h1>Make it your next cup.</h1><p>No account needed. Just your details and your favourite coffee.</p></div></div>
     <div className="store-banner"><Info size={20} aria-hidden="true" /><p><strong>Checkout preview.</strong> No payment will be taken and no real order will be placed. Form details and demo orders are cleared when you refresh this page.</p></div>
     <ol className="store-steps" aria-label="Checkout progress">{steps.map((label, index) => <li key={label} aria-current={index === step ? 'step' : undefined}>{index < step ? <button onClick={() => goStep(index)}>✓ {label}</button> : <span>{index + 1}. {label}</span>}</li>)}</ol>
@@ -80,7 +80,7 @@ export default function Checkout({ cart, navigate, draft, setDraft, onComplete }
       </div>}
       {step === 1 && <>
         <fieldset className="store-options"><legend>Receive your order *</legend><div className="store-choices">
-          <label className="store-choice"><input id="fulfilment" type="radio" name="fulfilment" value="delivery" checked={draft.fulfilment === 'delivery'} onChange={() => edit('fulfilment', 'delivery')} aria-describedby={errors.fulfilment ? 'fulfilment-error' : undefined} /><div><Truck size={22} /><strong>Home delivery</strong><span>Across India</span><span>Delivery charge: to be confirmed</span></div></label>
+          <label className="store-choice"><input id="fulfilment" type="radio" name="fulfilment" value="delivery" checked={draft.fulfilment === 'delivery'} onChange={() => edit('fulfilment', 'delivery')} aria-describedby={errors.fulfilment ? 'fulfilment-error' : undefined} /><div><Truck size={22} /><strong>Home delivery</strong><span>Across India</span><span>Delivery: ₹80/kg per item + 5% GST</span></div></label>
           <label className="store-choice"><input type="radio" name="fulfilment" value="pickup" checked={draft.fulfilment === 'pickup'} onChange={() => edit('fulfilment', 'pickup')} /><div><MapPin size={22} /><strong>Café pickup</strong><span>Collect from Ozkafe, Kolkata</span><span>No shipping required</span></div></label>
         </div>{errors.fulfilment && <p className="store-error" id="fulfilment-error">{errors.fulfilment}</p>}</fieldset>
         {draft.fulfilment === 'delivery' && <fieldset className="store-form-section"><legend>Delivery address</legend><AddressFields prefix="shipping" value={draft.shipping} update={(key, value) => editAddress('shipping', key, value)} errors={errors} /></fieldset>}

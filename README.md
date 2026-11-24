@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Open the URL printed by Vite, then choose **Shop Coffee**. The home page's coffee links also open the shop.
+Open the URL printed by Vite, then choose **Commercial**, **Single Origin** or **Instant Coffee**. The home page's coffee links open the existing **Coffee Beans** catalog.
 
 ```sh
 npm run build
@@ -22,22 +22,22 @@ For the browser walkthrough, keep the dev server running and run `npm run test:u
 
 | Route | Purpose |
 | --- | --- |
-| `/shop` | Search, collection filters and price/name sorting |
+| `/coffee-beans` | Existing coffee catalog, search and category shelves |
 | `/product?id=cb-1` | Packaging/back label, pack size, applicable grind and quantity |
 | `/cart` | Edit variants/quantities, remove items, see subtotal and GST |
 | `/checkout` | Guest contact details, delivery/pickup, billing, payment preview and review |
 | `/confirmation?id=DEMO-...` | A specific demo order summary |
 | `/orders` | Demo orders created during the current page session |
 
-The existing `/coffee-beans`, `/commercial`, `/single-origin` and `/instant-coffee` pages link into the same product-selection flow. Existing Vercel and static-host rewrites serve deep links through `index.html`.
+The existing `/coffee-beans`, `/commercial`, `/single-origin` and `/instant-coffee` pages link into the same product-selection flow. The separate Shop Coffee page has been removed; old `/shop` links redirect to `/coffee-beans`. Existing Vercel and static-host rewrites serve deep links through `index.html`.
 
 ### Confirmed checkout choices
 
 - Guest checkout: no account, password or OTP step.
 - Delivery throughout India or pickup at the existing Kolkata cafe address.
 - Online payment only, representing a future Razorpay checkout.
-- Delivery charges are undecided and displayed as **To be confirmed**, never silently treated as free shipping. Delivery totals are labeled **Items total** and exclude shipping. Pickup does not require shipping.
-- Catalog prices and the existing 5% GST calculation are retained. No inventory, discounts, delivery dates or serviceability guarantees are fabricated.
+- Delivery costs **₹80 per kg per item**, proportional to pack weight and multiplied by quantity: 250g = ₹20, 1.5kg = ₹120. For cold brew, **1ml = 1g** for billing. Café pickup has no delivery charge. Before a fulfillment method is selected, the cart shows a clearly labeled home-delivery estimate.
+- **5% GST applies to the overall bill: products plus delivery.** For example, two ₹226 packs of 250g each: products ₹452 + delivery ₹40 + GST ₹24.60 = **₹516.60**. Pickup for the same cart is ₹474.60. Product catalog prices remain unchanged. No inventory, discounts, delivery dates or serviceability guarantees are fabricated.
 
 Contact name, email and Indian mobile number are required. Delivery also requires recipient name, street address, city, state/UT and a six-digit PIN code. Locality, landmark and order instructions are optional. Customers can provide a separate billing address; pickup customers do not need a delivery address. Validation checks format only, not phone numbers, email ownership or PIN-code serviceability.
 
@@ -50,10 +50,10 @@ The cart is stored in `localStorage` under the existing `ozkafe_cart` key. Store
 ## Code structure
 
 - `src/data/coffeeBeansData.js`: existing catalog, sizes, prices, categories and label images.
-- `src/data/commerce.js`: cart normalization, variant identity, grind applicability, money formatting and totals.
+- `src/data/commerce.js`: cart normalization, variant identity, grind applicability, weight-based delivery, money formatting and totals.
 - `src/data/checkout.js`: checkout shape, state/UT options and step validation.
 - `src/components/CommerceUI.jsx`: shared images, quantity controls, links, summaries and empty states.
-- `src/pages/Shop.jsx`, `Product.jsx`, `Cart.jsx`, `Checkout.jsx`, `Orders.jsx`: storefront screens.
+- `src/pages/Product.jsx`, `Cart.jsx`, `Checkout.jsx`, `Orders.jsx`: storefront screens.
 - `src/commerce.css`: responsive styling using the existing Ozkafe design tokens.
 - `src/App.jsx`: navigation, persistent cart and in-memory checkout/order state.
 - `src/data/commerce.test.js`: cart recovery, variant merging, totals and checkout validation tests.

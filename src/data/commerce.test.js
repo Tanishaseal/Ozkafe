@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeCart, cartTotals, supportsGrind, productById } from './commerce.js';
+import { normalizeCart, cartTotals, supportsGrind, productById, packWeightGrams } from './commerce.js';
+import { COFFEE_BEANS_DATA } from './coffeeBeansData.js';
 import { newCheckout, validateCheckout } from './checkout.js';
 
 const row = (overrides = {}) => ({ coffeeId: 'cb-1', selectedSize: '250g', selectedGrind: 'Whole Beans', quantity: 1, ...overrides });
@@ -13,13 +14,41 @@ test('Cart uses catalog prices and merges identical variants without merging dif
   assert.equal(cart.length, 2);
   assert.equal(cart[0].quantity, 3);
   assert.equal(cart[0].prices['250g'], 226);
-  assert.deepEqual(cartTotals(cart), { subtotal: 904, tax: 45.2, total: 949.2, count: 4 });
+  assert.deepEqual(cartTotals(cart, 'delivery'), { subtotal: 904, delivery: 80, tax: 49.2, total: 1033.2, count: 4, weightGrams: 1000 });
 });
 test('Changing a variant merges existing rows and retains total quantity', () => {
   const cart = normalizeCart([row(), row({ selectedSize: '500g', quantity: 2 })]);
   const changed = normalizeCart(cart.map(item => ({ ...item, selectedSize: '500g' })));
   assert.equal(changed.length, 1);
   assert.equal(changed[0].quantity, 3);
+});
+test('Delivery charges each pack proportionally and applies GST to products plus delivery', () => {
+  const one = cartTotals(normalizeCart([row()]), 'delivery');
+  assert.deepEqual(one, { subtotal: 226, delivery: 20, tax: 12.3, total: 258.3, count: 1, weightGrams: 250 });
+  const two = cartTotals(normalizeCart([row({ quantity: 2 })]), 'delivery');
+  assert.equal(two.delivery, 40);
+  assert.equal(two.tax, 24.6);
+  assert.equal(two.total, 516.6);
+  const mixed = cartTotals(normalizeCart([row({ selectedSize: '1 Kg' }), row({ selectedSize: '500g' })]), 'delivery');
+  assert.equal(mixed.delivery, 120);
+  assert.equal(mixed.weightGrams, 1500);
+});
+test('Pickup removes both the delivery fee and GST on that fee', () => {
+  assert.deepEqual(cartTotals(normalizeCart([row({ quantity: 2 })]), 'pickup'), { subtotal: 452, delivery: 0, tax: 22.6, total: 474.6, count: 2, weightGrams: 500 });
+});
+test('Cold brew uses the approved 1ml = 1g conversion including mixed carts', () => {
+  const coldBrew = cartTotals(normalizeCart([row({ coffeeId: 'cb-57', selectedSize: '180 ml', quantity: 2 })]), 'delivery');
+  assert.equal(coldBrew.delivery, 28.8);
+  assert.equal(coldBrew.tax, 43.34);
+  assert.equal(coldBrew.total, 910.14);
+  const mixed = cartTotals(normalizeCart([row(), row({ coffeeId: 'cb-57', selectedSize: '500 ml' })]), 'delivery');
+  assert.equal(mixed.delivery, 60);
+  assert.equal(mixed.weightGrams, 750);
+});
+test('Every catalog size has a known weight; unsupported units cannot silently get free delivery', () => {
+  for (const product of COFFEE_BEANS_DATA) for (const size of Object.keys(product.prices)) assert.ok(packWeightGrams(size) > 0);
+  assert.throws(() => packWeightGrams('Standard'), /Missing delivery weight/);
+  assert.deepEqual(cartTotals([], 'delivery'), { subtotal: 0, delivery: 0, tax: 0, total: 0, count: 0, weightGrams: 0 });
 });
 test('Instant, cold brew and cascara never receive a grind option', () => {
   for (const id of ['cb-28', 'cb-51', 'cb-57']) {

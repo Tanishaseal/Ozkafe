@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingBag } from 'lucide-react';
 import { GRIND_SIZE_OPTIONS, getProductBackImage } from '../data/coffeeBeansData';
-import { defaultSize, money, productById, supportsGrind } from '../data/commerce';
+import { collectionPage, defaultSize, money, productById, supportsGrind } from '../data/commerce';
 import { EmptyState, ProductImage, Quantity, ShopLink } from '../components/CommerceUI';
 
 export default function Product({ productId, navigate, onAddToCart }) {
@@ -18,7 +18,7 @@ export default function Product({ productId, navigate, onAddToCart }) {
     if (buyNow) navigate('checkout');
   };
   return <div className="store-page container store-content">
-    <nav className="store-breadcrumb" aria-label="Breadcrumb"><ShopLink navigate={navigate}>Shop</ShopLink><span>/</span><ShopLink navigate={navigate} params={{ category: product.categoryId }}>{product.category}</ShopLink><span>/</span><span aria-current="page">{product.name}</span></nav>
+    <nav className="store-breadcrumb" aria-label="Breadcrumb"><ShopLink navigate={navigate}>Coffee Beans</ShopLink><span>/</span><ShopLink navigate={navigate} page={collectionPage(product)}>{product.category}</ShopLink><span>/</span><span aria-current="page">{product.name}</span></nav>
     <div className="store-product-layout"><div className="store-gallery"><div className={`store-product-photo ${back ? 'is-back' : ''}`}><ProductImage src={back ? getProductBackImage(product) : product.image} alt={`${product.name} ${back ? 'back label' : 'packaging'}`} /></div><div className="store-gallery-tabs"><button onClick={() => setBack(false)} aria-pressed={!back}>Packaging</button><button onClick={() => setBack(true)} aria-pressed={back}>Back label</button></div></div>
       <section className="store-product-info"><span className="store-eyebrow">{product.category}</span><h1>{product.name}</h1>{product.detail && <p>{product.detail}</p>}<div className="store-product-price">{money(product.prices[size])}<span>Excl. 5% GST · {size}</span></div>
         <fieldset className="store-options"><legend>Pack size <span>Choose your size</span></legend><div>{Object.entries(product.prices).map(([key, price]) => <label key={key} className={size === key ? 'is-selected' : ''}><input type="radio" name="size" value={key} checked={size === key} onChange={() => { setSize(key); setAdded(false); }} /><strong>{key}</strong><span>{money(price)}</span></label>)}</div></fieldset>

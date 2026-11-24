@@ -57,7 +57,6 @@ export default function Footer({ setCurrentPage }) {
           <div className="footer-nav">
             <h4 className="footer-heading">Navigation</h4>
             <div className="footer-links-list">
-              <a href="/shop" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('shop'); }}>Shop Coffee</a>
               <a href="/orders" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('orders'); }}>Orders</a>
               <a href="/" className="footer-link-btn" onClick={(e) => { e.preventDefault(); handleNav('home'); }}>
                 Home

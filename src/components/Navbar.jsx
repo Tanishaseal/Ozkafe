@@ -64,7 +64,6 @@ export default function Navbar({ currentPage, setCurrentPage, totalCartItems = 0
 
   const navItems = [
     { id: 'home', label: 'Home', path: '/' },
-    { id: 'shop', label: 'Shop Coffee', path: '/shop' },
     { id: 'about', label: 'About Us', path: '/aboutus' },
     { id: 'commercial', label: 'Commercial', path: '/commercial' },
     { id: 'single-origin', label: 'Single Origin', path: '/single-origin' },

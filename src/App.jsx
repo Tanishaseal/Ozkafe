@@ -15,7 +15,6 @@ import FAQ from './pages/FAQ';
 import FlyToCartAnimation from './components/FlyToCartAnimation';
 import { getProductBackImage } from './data/coffeeBeansData';
 import { normalizeCart, supportsGrind } from './data/commerce';
-import Shop from './pages/Shop';
 import Product from './pages/Product';
 import Checkout from './pages/Checkout';
 import Orders, { OrderConfirmation } from './pages/Orders';
@@ -23,7 +22,6 @@ import { newCheckout } from './data/checkout';
 import './commerce.css';
 
 const PAGE_TITLES = {
-  shop: 'Shop Coffee | Ozkafe',
   product: 'Coffee Details | Ozkafe',
   checkout: 'Checkout | Ozkafe',
   orders: 'Order Previews | Ozkafe',
@@ -40,7 +38,7 @@ const PAGE_TITLES = {
 };
 
 const PAGE_ROUTES = {
-  shop: '/shop', product: '/product', checkout: '/checkout', orders: '/orders', confirmation: '/confirmation',
+  product: '/product', checkout: '/checkout', orders: '/orders', confirmation: '/confirmation',
   home: '/',
   about: '/aboutus',
   commercial: '/commercial',
@@ -57,7 +55,8 @@ const getPageFromLocation = () => {
 
   // 1. Check pathname (e.g. /, /home, /aboutus, /commercial, /single-origin, /instant-coffee, /contactus, /faq)
   const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
-  const storePage = ['shop', 'product', 'checkout', 'orders', 'confirmation'].find(page => pathname === `/${page}`);
+  if (pathname === '/shop') return 'coffee-beans';
+  const storePage = ['product', 'checkout', 'orders', 'confirmation'].find(page => pathname === `/${page}`);
   if (storePage) return storePage;
   
   if (pathname === '/' || pathname === '/home' || pathname === '/index.html') {
@@ -181,9 +180,15 @@ export default function App() {
   useEffect(() => {
     const syncRouteFromLocation = () => {
       const resolvedPage = getPageFromLocation();
+      if (window.location.pathname.replace(/\/+$/, '') === '/shop') {
+        window.history.replaceState({ page: 'coffee-beans' }, '', '/coffee-beans');
+      }
       setCurrentPage(resolvedPage);
       setRouteSearch(window.location.search);
     };
+
+    // Retire the extra shop route while keeping existing bookmarks usable.
+    if (window.location.pathname.replace(/\/+$/, '') === '/shop') syncRouteFromLocation();
 
     // If initial URL had a hash like #home, replace it cleanly with clean path (e.g. / for home)
     if (window.location.hash) {
@@ -360,7 +365,6 @@ export default function App() {
 
       {/* Main Pages */}
       <main id="main-content" tabIndex={-1}>
-        {currentPage === 'shop' && <Shop key={routeSearch} search={routeSearch} navigate={handlePageChange} />}
         {currentPage === 'product' && <Product key={routeSearch} productId={new URLSearchParams(routeSearch).get('id')} navigate={handlePageChange} onAddToCart={handleAddToCart} />}
         {currentPage === 'checkout' && <Checkout cart={cart} navigate={handlePageChange} draft={checkoutDraft} setDraft={setCheckoutDraft} onComplete={handleDemoOrder} />}
         {currentPage === 'orders' && <Orders orders={orders} navigate={handlePageChange} clearOrders={() => setOrders([])} />}
